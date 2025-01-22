@@ -167,4 +167,27 @@ public class Punto {
             puntos.clear();
     }
     
+    /**
+     * Metodo que separa las coordenadas de los puntos por sus coordenadas.
+     * <p>Necesario para usar Plot de jmathplot
+     * @param puntos arrayList de objetos tipo Punto
+     * @param coordenadas array que contendra el array de coordenadas X en su primera posicion
+     * y el array de coordenadas y en su segunda posicion
+     * @throws Exception si array de puntos esta vacio, lanza excepcion
+     */
+    public static void separarCordenadas(ArrayList<Punto> puntos,double[][] coordenadas) throws Exception{
+        if(puntos.isEmpty())
+            throw new Exception("Array de puntos vacío");
+        
+        System.out.println("llego aqui");
+        coordenadas[0] = new double[puntos.size()];
+        coordenadas[1] = new double[puntos.size()];
+        Punto pAux;
+        for(int i = 0 ; i < puntos.size() ; i++){
+            pAux = puntos.get(i);
+            coordenadas[0][i] = pAux.getX();
+            coordenadas[1][i] = pAux.getY();
+        }
+    }
+    
 }

@@ -8,8 +8,9 @@ import com.amc_prac2.Punto.Punto;
 import java.util.ArrayList;
 
 /**
- * Clase para guardar la ruta de puntos con el total de 
- * veces que se ha calculado la distancia euclidea
+ * Objeto que almacena la ruta de puntos con el num. de  
+ * veces que se ha calculado la distancia euclidea y la
+ * distantia total recorrida
  * @author javi
  */
 public class Ruta {
@@ -68,5 +69,42 @@ public class Ruta {
     public double getDistanciaTotal(){
         return distanciaTotal;
     }
+    
+    @Override
+    public String toString() {
+        String resultado = "Ruta: ";
+        Punto pAux;
+        //El formato de la sobrecarga toString de Punto no me parece correcto aqui
+        
+        //Aniadimos todos los elementos de la lista menos el ultimo
+        for (int i = 0; i < ruta.size() - 1; i++) {
+            //resultado += ruta.get(i) +  " - ";
+            
+            // Cada 8 resultados cambio de linea
+            if(i % 7 == 0)
+                resultado += "\n";
+            
+            pAux = ruta.get(i);
+            resultado += pAux.getId() + "(" + pAux.getX() + "-" + pAux.getY() + ") - ";
+            
+            
+        }
+        
+        //Aniadimos el ultimo elemento de la lista
+        //resultado += ruta.getLast();
+        pAux = ruta.getLast();
+        resultado +=  pAux.getId() + "(" + pAux.getX() + "-" + pAux.getY() + ")";
+        
+        
+        //Mostramos numero de distancias calculadas en una nueva linea
+        resultado += "\nDistancias (euclideas) calculadas: " + distanciaTotal;
+        
+        //Mostramos el coste total de la ruta en una nueva linea
+        resultado += "\nCoste total de la ruta: " + costeTotal;
+        
+        return resultado;
+    }
+    
+    
     
 }

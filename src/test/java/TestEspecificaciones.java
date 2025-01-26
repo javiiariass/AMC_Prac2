@@ -141,7 +141,20 @@ public class TestEspecificaciones {
                         
                         if(ruta== null)
                             break;
+                        System.out.println("Mi solucion"
+                                + "-------------------------");
                         System.out.println(ruta);
+                        
+                        
+                        System.out.println("Solucion adri"
+                                + "--------------------------");
+                        ruta = new Ruta(Voraz.vorazUnidireccional(puntos, 0),Voraz.getSolucion(),Voraz.getCont());
+                        System.out.println(ruta);
+                        
+                        
+                        
+                        
+                        
                         
                         //coordenadas[0] -> array de coord eje X
                         //coordenadas[1] -> array de coord eje Y
@@ -175,6 +188,7 @@ public class TestEspecificaciones {
                         } catch (Exception e) {
                             System.out.println("Error: " + e.getMessage());
                         }
+                        
                     }
                     case 10 ->{
                         double[] x ={ 12.3, 1 , 3 , 4};
@@ -202,6 +216,7 @@ public class TestEspecificaciones {
             } catch (Exception e) {
                 System.err.println("Error " + e.getMessage());
             }
+            System.out.println("salgox2");
 
         } while (!salir);
     }

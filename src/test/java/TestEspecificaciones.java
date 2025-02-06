@@ -45,8 +45,7 @@ public class TestEspecificaciones {
                                
                                -------------------------------------------------------
                                                                         Peor Caso:""" + (peorCaso == true ? " ON" : " OFF"));
-            System.out.println(nombreArchivoLeido!=null?(
-                              "                                         Archivo leido: " + nombreArchivoLeido):" ");
+            System.out.println(nombreArchivoLeido != null ? ("                                         Archivo leido: " + nombreArchivoLeido) : " ");
             System.out.println("1. Generar Array aleatorio");
             System.out.println("2. Leer DataSet de memoria");
             System.out.println("3. Comprobar estrategias con dataset cargado");
@@ -56,7 +55,9 @@ public class TestEspecificaciones {
             System.out.println("7. Mostrar Array cargado");
             System.out.println("8. Activar/Desactivar peor caso (Todos los puntos en la misma coordenada X)");
             System.out.println("9. Elegir estrategia con dataset cargado");
+            System.out.println("10. Calculadora de distancias");
             System.out.println("0. Salir");
+
             Scanner entrada = new Scanner(System.in);
             opcionMenu = entrada.nextInt();
             try {
@@ -92,13 +93,13 @@ public class TestEspecificaciones {
                     case 4 -> {
                         boolean[] visitado = new boolean[3];
                         visitado[2] = true;
-                        System.out.println(visitado[0]!=true);
+                        System.out.println(visitado[0] != true);
                         Random rand = new Random();
-                        int inicial = rand.nextInt(40); 
-                        for (int i = 0; i < 40 ; i++){
+                        int inicial = rand.nextInt(40);
+                        for (int i = 0; i < 40; i++) {
                             System.out.println(inicial);
-                            inicial=(inicial+1)%40;
-                            
+                            inicial = (inicial + 1) % 40;
+
                         }
                     }
                     case 5 -> {
@@ -118,91 +119,116 @@ public class TestEspecificaciones {
                         peorCaso = (peorCaso != true);
                     }
                     case 9 -> {
-                        
+
                         // No hay puntos cargados
-                        if(puntos.size() == 0){
+                        if (puntos.size() == 0) {
                             System.out.println("Primero elija o cree un dataset");
                             sleep(2000);
                             break;
                         }
-                        
+
                         Ruta ruta = null;
+                        Ruta rutaAdri = null;
                         System.out.println("1. Voraz unidireccional sin poda");
+                        System.out.println("2. Voraz bidireccional sin poda");
+                        System.out.println("3. Voraz unidireccional con poda");
+                        System.out.println("4. Voraz bidireccional con poda");
+
                         int opcion = entrada.nextInt();
-                        switch(opcion) {
+                        Random rnd = new Random(System.currentTimeMillis());
+                        int inicial = rnd.nextInt(puntos.size());
+                        switch (opcion) {
                             case 1 -> {
-                                ruta = Voraz.UnidireccionalExhaustiva(puntos, 0);
+                                ruta = Voraz.UnidireccionalExhaustiva(puntos, inicial);
+                                rutaAdri = new Ruta(Voraz.vorazUnidireccional(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
                             }
+                            case 2 -> {
+                                ruta = Voraz.BidireccionalExhaustiva(puntos, inicial);
+                                rutaAdri = new Ruta(Voraz.vorazBidireccional(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                            }
+                            case 3 -> {
+                                ruta = Voraz.UnidireccionalExhaustivaPoda(puntos, inicial);
+                                rutaAdri = new Ruta(Voraz.vorazUnidireccionalPoda(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                            }
+                            case 4 -> {
+                                ruta = Voraz.BidireccionalExhaustivaPoda(puntos, 0);
+                                rutaAdri = new Ruta(Voraz.vorazBidireccionalPoda(puntos, 0), Voraz.getSolucion(), Voraz.getCont());
+                            }
+
                             default -> {
                                 System.out.println("opcion incorrecta");
                                 sleep(2000);
                             }
                         }
-                        
-                        if(ruta== null)
+
+                        if (ruta == null) {
                             break;
+                        }
+
                         System.out.println("Mi solucion"
                                 + "-------------------------");
                         System.out.println(ruta);
-                        
-                        
                         System.out.println("Solucion adri"
                                 + "--------------------------");
-                        ruta = new Ruta(Voraz.vorazUnidireccional(puntos, 0),Voraz.getSolucion(),Voraz.getCont());
-                        System.out.println(ruta);
-                        
-                        
-                        
-                        
-                        
-                        
+                        System.out.println(rutaAdri);
+
                         //coordenadas[0] -> array de coord eje X
                         //coordenadas[1] -> array de coord eje Y
-                        double[][] coordenadas= new double[2][];
-                        
+                        double[][] coordenadas = new double[2][];
+
                         try {
-                            ArrayList<Punto>aux = ruta.getRuta();
+                            ArrayList<Punto> aux = ruta.getRuta();
                             Punto.separarCordenadas(ruta.getRuta(), coordenadas);
                             Plot2DPanel ploteando = new Plot2DPanel();
                             ploteando.addScatterPlot("pruebaPlot", Color.BLUE, coordenadas[0], coordenadas[1]);
-                            ploteando.addLinePlot("pruebaPlot", Color.RED,coordenadas[0], coordenadas[1]);
-                            
+                            ploteando.addLinePlot("pruebaPlot", Color.RED, coordenadas[0], coordenadas[1]);
+
                             Punto punAux;
                             // Añadir las etiquetas manualmente
                             BaseLabel et = new BaseLabel("hola", Color.GREEN, 1.0);
-                            et.setCoord(100,100);
+                            et.setCoord(100, 100);
                             ploteando.addPlotable(et);
                             for (int i = 0; i < ruta.getRuta().size(); i++) {
                                 punAux = ruta.getRuta().get(i);
-                                
-                                BaseLabel etiqueta = new BaseLabel(String.valueOf(punAux.getId()), Color.BLUE,0.5,0.5);
+
+                                BaseLabel etiqueta = new BaseLabel(String.valueOf(punAux.getId()), Color.BLUE, 0.5, 0.5);
                                 etiqueta.setFont(new Font("Arial", Font.BOLD, 12));
-                                etiqueta.setCoord(punAux.getX() ,punAux.getY() );
+                                etiqueta.setCoord(punAux.getX(), punAux.getY());
                                 ploteando.addPlotable(etiqueta);
                             }
-                            
-                            JFrame frame  = new JFrame("panel pal plot");
+
+                            JFrame frame = new JFrame("panel pal plot");
+                            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             frame.setContentPane(ploteando);
-                            frame.setSize(new Dimension(800,800));
+                            frame.setSize(new Dimension(800, 800));
                             frame.setVisible(true);
                         } catch (Exception e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                        
+
                     }
-                    case 10 ->{
-                        double[] x ={ 12.3, 1 , 3 , 4};
-                        double[] y ={ 34.3, 30, 50, 40};
+                    case 10 -> {
+                        do {
+                            System.out.println("punto 1");
+                            int opcion = entrada.nextInt();
+                            Punto p1 = puntos.get(opcion);
+                            System.out.println("punto 2");
+                            opcion = entrada.nextInt();
+                            Punto p2 = puntos.get(opcion);
+                            System.out.println("Distancia:   " + p1.distancia(p2));
+                        } while (entrada.nextInt() != -99);
+
+                    }
+                    case 11 -> {
+                        double[] x = {12.3, 1, 3, 4};
+                        double[] y = {34.3, 30, 50, 40};
                         Plot2DPanel ploteando = new Plot2DPanel();
                         ploteando.addScatterPlot("pruebaPlot", Color.red, x, y);
-                        
-                        
-                        JFrame frame  = new JFrame("panel pal plot");
+
+                        JFrame frame = new JFrame("panel pal plot");
                         frame.setContentPane(ploteando);
                         frame.setVisible(true);
-                        
-                        
-                        
+
                     }
                     case 0 -> {
                         salir = true;
@@ -216,7 +242,7 @@ public class TestEspecificaciones {
             } catch (Exception e) {
                 System.err.println("Error " + e.getMessage());
             }
-            System.out.println("salgox2");
+            
 
         } while (!salir);
     }

@@ -82,25 +82,43 @@ public class TestEspecificaciones {
                         System.out.print("Introduce el nombre del archivo a cargar (por ejemplo, berlin52, sin extension de archivo): ");
                         String nombreArchivo = entrada.nextLine();
                         Punto.vaciaPuntos(puntos);
-                        puntos = LectorTSP.lecturaArchivo(nombreArchivo);
+                        puntos = LectorTSP.selectorArchivo(nombreArchivo);
                         nombreArchivoLeido = nombreArchivo;
                     }
                     case 3 -> {
                         //Muestra por pantalla el resultado de aplicar las 4 estrategias 
                         //al dataset cargado en memoria
+                      
 
                     }
                     case 4 -> {
-                        boolean[] visitado = new boolean[3];
-                        visitado[2] = true;
-                        System.out.println(visitado[0] != true);
-                        Random rand = new Random();
-                        int inicial = rand.nextInt(40);
-                        for (int i = 0; i < 40; i++) {
-                            System.out.println(inicial);
-                            inicial = (inicial + 1) % 40;
-
-                        }
+                        Random rnd = new Random(System.currentTimeMillis());
+                        int inicial = rnd.nextInt(puntos.size());
+                        System.out.println("Inicial: " + inicial);
+                        Ruta rutaUni = Voraz.UnidireccionalExhaustiva(puntos, inicial);
+                        Ruta rutaUniPoda = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<Punto>(puntos), inicial);
+                        Ruta rutaBi = Voraz.BidireccionalExhaustiva(puntos, inicial);
+                        Ruta rutaBiPoda = Voraz.BidireccionalExhaustivaPoda(new ArrayList<Punto>(puntos) , inicial);
+                        System.out.println("Unidireccional sin poda"
+                                + "\n-------------------------");
+                        //System.out.println(rutaUni.getRuta());
+                        System.out.println("Distancia: " + rutaUni.getDistanciaTotal());
+                        System.out.println("Coste: " + rutaUni.getCosteTotal());
+                        System.out.println("Bidireccional sin poda"
+                                + "\n-------------------------");
+                        System.out.println("Distancia: " + rutaBi.getDistanciaTotal());
+                        System.out.println("Coste: " + rutaBi.getCosteTotal());
+                        // System.out.println(rutaUniPoda.getRuta());
+                        System.out.println("Unidireccional con poda"
+                                + "\n-------------------------");
+                        System.out.println("Distancia: " + rutaUniPoda.getDistanciaTotal());
+                        System.out.println("Coste: " + rutaUniPoda.getCosteTotal());
+                       // System.out.println(rutaBi.getRuta());
+                        System.out.println("Bidireccional con poda"
+                                + "\n-------------------------");
+                        System.out.println("Distancia: " + rutaBiPoda.getDistanciaTotal());
+                        System.out.println("Coste: " + rutaBiPoda.getCosteTotal());
+                        //System.out.println(rutaBiPoda.getRuta());
                     }
                     case 5 -> {
 
@@ -136,7 +154,8 @@ public class TestEspecificaciones {
 
                         int opcion = entrada.nextInt();
                         Random rnd = new Random(System.currentTimeMillis());
-                        int inicial = rnd.nextInt(puntos.size());
+                        //int inicial = rnd.nextInt(puntos.size());
+                        int inicial = 9;
                         switch (opcion) {
                             case 1 -> {
                                 ruta = Voraz.UnidireccionalExhaustiva(puntos, inicial);
@@ -151,8 +170,8 @@ public class TestEspecificaciones {
                                 rutaAdri = new Ruta(Voraz.vorazUnidireccionalPoda(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
                             }
                             case 4 -> {
-                                ruta = Voraz.BidireccionalExhaustivaPoda(puntos, 0);
-                                rutaAdri = new Ruta(Voraz.vorazBidireccionalPoda(puntos, 0), Voraz.getSolucion(), Voraz.getCont());
+                                ruta = Voraz.BidireccionalExhaustivaPoda(puntos, inicial);
+                                rutaAdri = new Ruta(Voraz.vorazBidireccionalPoda(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
                             }
 
                             default -> {
@@ -168,10 +187,10 @@ public class TestEspecificaciones {
                         System.out.println("Mi solucion"
                                 + "-------------------------");
                         System.out.println(ruta);
-                        System.out.println("Solucion adri"
-                                + "--------------------------");
+                        System.out.println("""
+                                           Solucion adri
+                                   --------------------------""");
                         System.out.println(rutaAdri);
-
                         //coordenadas[0] -> array de coord eje X
                         //coordenadas[1] -> array de coord eje Y
                         double[][] coordenadas = new double[2][];
@@ -181,7 +200,7 @@ public class TestEspecificaciones {
                             Punto.separarCordenadas(ruta.getRuta(), coordenadas);
                             Plot2DPanel ploteando = new Plot2DPanel();
                             ploteando.addScatterPlot("pruebaPlot", Color.BLUE, coordenadas[0], coordenadas[1]);
-                            ploteando.addLinePlot("pruebaPlot", Color.RED, coordenadas[0], coordenadas[1]);
+                            ploteando.addLinePlot("Unidireccional", Color.RED, coordenadas[0], coordenadas[1]);
 
                             Punto punAux;
                             // Añadir las etiquetas manualmente

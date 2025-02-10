@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Gestiona el proceso de leer datasets en formato ".tsp"
+ *
  * @author javi
  */
 public class LectorTSP {
@@ -30,9 +31,16 @@ public class LectorTSP {
      * @return Devuelve una lista de los puntos leidos del fichero o una lista
      * vacía en su defecto //@throws IOException
      */
-    public static ArrayList<Punto> lecturaArchivo(String rutaArchivo) {//throws IOException{
+    public static ArrayList<Punto> selectorArchivo(String rutaArchivo) {//throws IOException{
         File fichero = new File("datasets/" + rutaArchivo + ".tsp");
-        int dimension = 0;
+        return lectorArchivo(fichero);
+    }
+    
+    
+    
+    
+    public static ArrayList<Punto> lectorArchivo(File fichero){
+       int dimension = 0;
         ArrayList<Punto> puntos = new ArrayList<>();
         boolean empiezanCoordenadas = false;
         //Con try-with-resources nos aseguramos de que los recursos se cierren, ocurra o no una excepción
@@ -71,14 +79,20 @@ public class LectorTSP {
             }
         } catch (FileNotFoundException e) {
             System.out.println("Archivo no encontrado: " + e.getMessage());
+            return null;
         } catch (IOException e) {
             System.out.println("Error de lectura: " + e.getMessage());
+            return null;
         }
 
         if (puntos.size() != dimension) {
             System.out.println("Advertencia! El número de puntos leídos no coincide con la dimensión especificada");
+            return null;
         }
 
         return puntos;
     }
+
+    
+
 }

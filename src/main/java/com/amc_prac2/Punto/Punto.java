@@ -16,6 +16,27 @@ import java.util.Random;
  * @author javi
  */
 public class Punto {
+    /**
+     * Para usar JMathPlot es necesario tener las coordenadas de los ejes divididas en dos arrays
+     * divide el array ruta en dos arrays con sus coordenadas
+     * @param puntos ArrayList de objetos tipo Punto
+     * @param coordenadas array de 2 dimensiones. Primer array contiene array de las coordenadas X.
+     *  Segundo array contiene array de las coordenadas Y.
+     */
+    public static void separarCordenadas(ArrayList<Punto> puntos, double[][] coordenadas) throws Exception {
+        if(puntos.isEmpty())
+            throw new Exception("Array de puntos vacío");
+        coordenadas[0] = new double[puntos.size()];
+        coordenadas[1] = new double[puntos.size()];
+
+        Punto aux;
+        for (int i = 0; i < puntos.size(); i++) {
+            aux = puntos.get(i);
+            coordenadas[0][i] = aux.getX();
+            coordenadas[1][i] = aux.getY();
+            
+        }
+    }
 
     private double x, y;
     private final int id;
@@ -166,28 +187,5 @@ public class Punto {
         if(!puntos.isEmpty())
             puntos.clear();
     }
-    
-    /**
-     * Metodo que separa las coordenadas de los puntos por sus coordenadas.
-     * <p>Necesario para usar Plot de jmathplot
-     * @param puntos arrayList de objetos tipo Punto
-     * @param coordenadas array que contendra el array de coordenadas X en su primera posicion
-     * y el array de coordenadas y en su segunda posicion
-     * @throws Exception si array de puntos esta vacio, lanza excepcion
-     */
-    public static void separarCordenadas(ArrayList<Punto> puntos,double[][] coordenadas) throws Exception{
-        if(puntos.isEmpty())
-            throw new Exception("Array de puntos vacío");
-        
-        System.out.println("llego aqui");
-        coordenadas[0] = new double[puntos.size()];
-        coordenadas[1] = new double[puntos.size()];
-        Punto pAux;
-        for(int i = 0 ; i < puntos.size() ; i++){
-            pAux = puntos.get(i);
-            coordenadas[0][i] = pAux.getX();
-            coordenadas[1][i] = pAux.getY();
-        }
-    }
-    
+
 }

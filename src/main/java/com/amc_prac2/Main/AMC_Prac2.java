@@ -4,25 +4,38 @@
  */
 package com.amc_prac2.Main;
 
+import com.amc_prac2.GestorTSP.LectorTSP;
+import com.amc_prac2.Punto.Punto;
 import java.awt.Color;
-import static java.lang.Thread.sleep;
-import javax.swing.JFrame;
+import java.io.File;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.math.plot.Plot2DPanel;
 
 /**
  *
- * @author javiiariass
+ * @author javi
  */
 public class AMC_Prac2 extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AMC_Prac2
-     */
+    // ------------------------------------------------------------------------------------Inicializar------------------------------------------------------------------------------------
+    private ArrayList<Punto> puntos;
+
     public AMC_Prac2() {
         initComponents();
         iniciaComponentes();
+        //puntos = new ArrayList<>();
     }
 
+     private void iniciaComponentes() {
+        // Inicialización adicional de componentes no manejada por initComponents
+         actualizarEstadoBotones(false);
+        setVisible(true);
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,105 +46,374 @@ public class AMC_Prac2 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jInternalFrame1 = new javax.swing.JInternalFrame();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        framePlot = new javax.swing.JInternalFrame();
+        panelBotones = new javax.swing.JPanel();
+        panelDatasets = new javax.swing.JPanel();
+        botonGenerar = new javax.swing.JButton();
+        botonCargar = new javax.swing.JButton();
+        panelAlgoritmo = new javax.swing.JPanel();
+        botonCompararDataset = new javax.swing.JButton();
+        botonCompararTallas = new javax.swing.JButton();
+        datasetCargado = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jInternalFrame1.setVisible(true);
+        framePlot.setVisible(true);
 
-        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
-        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
-        jInternalFrame1Layout.setHorizontalGroup(
-            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
+        javax.swing.GroupLayout framePlotLayout = new javax.swing.GroupLayout(framePlot.getContentPane());
+        framePlot.getContentPane().setLayout(framePlotLayout);
+        framePlotLayout.setHorizontalGroup(
+            framePlotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jInternalFrame1Layout.setVerticalGroup(
-            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        framePlotLayout.setVerticalGroup(
+            framePlotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        botonGenerar.setText("Generar dataset");
+        botonGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonGenerarActionPerformed(evt);
+            }
+        });
+
+        botonCargar.setText("Cargar dataset");
+        botonCargar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCargarActionPerformed(evt);
+            }
+        });
+
+        TitledBorder bordePanelDatasets = BorderFactory.createTitledBorder("Datasets");
+        bordePanelDatasets.setTitleJustification(TitledBorder.CENTER);
+
+        panelDatasets.setBorder(bordePanelDatasets);
+
+        javax.swing.GroupLayout panelDatasetsLayout = new javax.swing.GroupLayout(panelDatasets);
+        panelDatasets.setLayout(panelDatasetsLayout);
+        panelDatasetsLayout.setHorizontalGroup(
+            panelDatasetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDatasetsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(botonGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonCargar)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
+        panelDatasetsLayout.setVerticalGroup(
+            panelDatasetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDatasetsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelDatasetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botonGenerar)
+                    .addComponent(botonCargar))
+                .addContainerGap())
         );
 
-        jButton1.setText("jButton1");
+        botonCompararDataset.setText("<html>4 estrategias<p>\ndataset cargado</html>");
+        botonCompararDataset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCompararDatasetActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("jButton2");
+        botonCompararTallas.setText("<html>\nComparar <p>\nestrategias\n</html>\n");
+        botonCompararTallas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCompararTallasActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("jButton3");
+        TitledBorder bordePanelAlgoritmo = BorderFactory.createTitledBorder("Estudio Algoritmos");
+        bordePanelAlgoritmo.setTitleJustification(TitledBorder.CENTER);
+
+        panelAlgoritmo.setBorder(bordePanelAlgoritmo);
+
+        javax.swing.GroupLayout panelAlgoritmoLayout = new javax.swing.GroupLayout(panelAlgoritmo);
+        panelAlgoritmo.setLayout(panelAlgoritmoLayout);
+        panelAlgoritmoLayout.setHorizontalGroup(
+            panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelAlgoritmoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(botonCompararDataset, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonCompararTallas, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelAlgoritmoLayout.setVerticalGroup(
+            panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelAlgoritmoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(botonCompararDataset)
+                    .addComponent(botonCompararTallas))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
+        panelBotones.setLayout(panelBotonesLayout);
+        panelBotonesLayout.setHorizontalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBotonesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelDatasets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelAlgoritmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(9, Short.MAX_VALUE))
+        );
+        panelBotonesLayout.setVerticalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBotonesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelDatasets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelAlgoritmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(194, Short.MAX_VALUE))
+        );
+
+        datasetCargado.setText("Dataset actual:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jInternalFrame1)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(datasetCargado, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                    .addComponent(framePlot))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addGap(16, 16, 16))
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(datasetCargado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jInternalFrame1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3)
-                        .addGap(0, 284, Short.MAX_VALUE)))
+                    .addComponent(framePlot)
+                    .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * metodo llamado por el constructor para inicializar ciertas partes que no 
-     * hace automaticamente el initComponents generado por netbeans
-     */
-    private void iniciaComponentes(){
-        //Inivializamos los botones 2 y 3 a falso.
-        //Necesitamos cargar dataset para poder usarlos
-        jButton2.setEnabled(false);
-        jButton3.setEnabled(false);
+    
+    
+    // ------------------------------------------------------------------------------------Listeners------------------------------------------------------------------------------------
+    
+    private void botonGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGenerarActionPerformed
+        System.out.println(pedirDatoNum("talla"));
+    }//GEN-LAST:event_botonGenerarActionPerformed
+
+    private void botonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCargarActionPerformed
+        File archivo = lectorTSPGrafico();
         
+        // Si seleccion valida
+        if (archivo != null) {
+            puntos = LectorTSP.lectorArchivo(archivo);
+        } 
+        
+        // Si seleccion invalida o no se ha podido cargar el archivo valido
+        if(archivo == null || puntos == null){
+            actualizaTextoDatasetCargado("");
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo válido", "Error en la selección", JOptionPane.ERROR_MESSAGE);
+            actualizarEstadoBotones(false);
+            actualizarFramePlot();
+        }
+        
+        // Archivo valido y se ha cargado correctamente
+        else{
+            actualizarEstadoBotones(true);
+            actualizaTextoDatasetCargado(archivo.getName());    
+            actualizarFramePlot(creaPlot2D(puntos));
+        }
+    }//GEN-LAST:event_botonCargarActionPerformed
+
+    private void botonCompararDatasetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararDatasetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botonCompararDatasetActionPerformed
+
+    private void botonCompararTallasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararTallasActionPerformed
+        
+        // Primer elemento de array -> tamanyo inicial
+        // Segundo elemento -> incremento entre tallas
+        // Tercer elemento -> numero de veces que realiza incrementos
+        // Cuarto elemento -> numero de datasets por talla
+        int[] datos = pedirTamanyo();
+        
+        // Si todos los datos son validos y el usuario no ha cancelado
+        if(datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1){
+            
+            // Talla inicial
+            int tallaActual = datos[0];
+            // Repetimos tantas veces como numero de incrementos
+            for (int i = 0; i < datos[2]; i++) {
+                
+                experimento(tallaActual, 10);
+                // Sumamos el incremento
+                tallaActual += datos[1];
+            }
+        }
+        System.out.println(datos[0]);
+        System.out.println(datos[1]);
+        System.out.println(datos[2]);
+        System.out.println(datos[3]);
+        
+
+    }//GEN-LAST:event_botonCompararTallasActionPerformed
+
+    
+    // ------------------------------------------------------------------------------------Actualizar------------------------------------------------------------------------------------
+    private void actualizaTextoDatasetCargado(String nombre) {
+        datasetCargado.setText("Dataset actual: " + nombre);
+    }
+
+    private void actualizarEstadoBotones(boolean datasetCargado) {
+        botonCompararDataset.setEnabled(datasetCargado);
+        //botonCompararTallas.setEnabled(datasetCargado);
+    }
+    
+    private void actualizarFramePlot(Plot2DPanel panel){
+        framePlot.setContentPane(panel);
+        framePlot.repaint();
     }
     /**
-     * Actualiza la disponibilidad de los botones dependientes del
-     * dataset cargado. Si no hay dataset cargado, no pueden usarse
-     * @param datasetCargado 
+     * Elimina el plot actual del subframe
+     * 
      */
-    public void actualizarEstadoBotones(boolean datasetCargado) {
-        jButton2.setEnabled(datasetCargado);
-        jButton3.setEnabled(datasetCargado);
-}
+    private void actualizarFramePlot(){
+        framePlot.getContentPane().removeAll(); // Elimina todo el contenido
+        framePlot.revalidate(); // Actualiza el layout
+        framePlot.repaint();
+    }
+    
+    // ------------------------------------------------------------------------------------Ventanas------------------------------------------------------------------------------------
+    private File lectorTSPGrafico() {
+        JFileChooser selectorArchivo = new JFileChooser();
+        File carpetaPredeterminada = new File("datasets");
+        selectorArchivo.setCurrentDirectory(carpetaPredeterminada);
+        selectorArchivo.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter filtroTSP = new FileNameExtensionFilter("Archivos TSP (*.tsp)", "tsp");
+        selectorArchivo.setFileFilter(filtroTSP);
 
+        int resultado = selectorArchivo.showOpenDialog(null);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivoSeleccionado = selectorArchivo.getSelectedFile();
+            System.out.println("Archivo seleccionado: " + archivoSeleccionado.getAbsolutePath());
+            return archivoSeleccionado;
+        } else {
+            System.out.println("Selección de archivo cancelada.");
+            return null;
+        }
+    }
+    
+    /**
+     * Ventana dialogo que permite pedir un numero entero positivo
+     * @param dato nombre del dato a pedir
+     * @return devuelve entero positivo
+     */
+    private int pedirDatoNum(String dato){
+        String entrada; 
+        boolean entradaValida = false;
+        int numero;
+        do{
+            
+            entrada = JOptionPane.showInputDialog(null, "Por favor, introduce " + dato + ":");
+
+            
+
+            try {
+                if (entrada == null) {
+                // El usuario ha pulsado "Cancelar" o ha cerrado el cuadro de diálogo
+                JOptionPane.showMessageDialog(null, "Operación cancelada.");
+                numero = -1;
+                }else{
+                    numero = Integer.parseInt(entrada);
+                    if(numero < 0) throw new NumberFormatException();
+                    entradaValida = true;
+                }
+                
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Entrada no válida. Por favor, introduce " + dato +" válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                numero = -1;
+            }
+
+        }while(!entradaValida && entrada!=null);
+        
+            
+        
+        
+        return numero;
+    }
+    
+    /**
+     * Primer elemento de array -> tamanyo inicial
+     *<p>Segundo elemento -> incremento entre tallas
+     *<p>Tercer elemento -> numero de veces que realiza incrementos
+     *<p>Cuarto elemento -> numero de datasets por talla
+     * @return 
+     */
+    private int[] pedirTamanyo(){
+        // Primer elemento de array -> tamanyo inicial
+        // Segundo elemento -> incremento
+        // Tercer elemento -> numero de incrementos
+        
+        // Por defecto, entrada invalida
+        int[] datos = {-1,-1,-1,-1};
+        
+        // Ahorramos al usuario ventanas emergentes innecesarias si cancela antes
+        datos[0] = pedirDatoNum("tamaño inicial");
+        if(datos[0] != -1){
+            datos[1] = pedirDatoNum("incremento");
+            
+            if(datos[1] != -1){
+                datos[2] = pedirDatoNum("numero de incrementos");
+                
+                if(datos[2] != -1)
+                    datos[3] = pedirDatoNum("numero de datasets por talla");
+            }
+                
+            
+        }
+        
+        return datos;
+    }
+   
+    
+    // ------------------------------------------------------------------------------------Auxiliares------------------------------------------------------------------------------------
+    private Plot2DPanel creaPlot2D(ArrayList<Punto> puntos){
+        double[][] coordenadas = new double[2][];
+        Punto.separarCordenadas(puntos, coordenadas);
+        
+        Plot2DPanel plot = new Plot2DPanel();
+        plot.addScatterPlot("pruebaPlot", Color.BLUE, coordenadas[0], coordenadas[1]);
+        plot.addLinePlot("Unidireccional", Color.RED, coordenadas[0], coordenadas[1]);
+        
+        return plot;
+    }
+    
+    /**
+     * Genera n datasets aleatorios con la talla pasada por parametro
+     * <p> devuelve el tiempo medio que tarda en encontrar la ruta de 
+     * los datasets
+     * @param talla tamanyo de los datasets a generar 
+     */
+    private void experimento(int talla, int n){
+        for (int i = 0; i < n; i++) {
+            
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------MAIN------------------------------------------------------------------------------------
     
     /**
      * @param args the command line arguments
-     * @throws java.lang.InterruptedException
      */
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -154,29 +436,28 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AMC_Prac2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
         AMC_Prac2 frame = new AMC_Prac2();
-                                double[] x ={ 12.3, 1 , 3 , 4};
-                        double[] y ={ 34.3, 30, 50, 40};
-                        Plot2DPanel ploteando = new Plot2DPanel();
-                        ploteando.addScatterPlot("pruebaPlot", Color.red, x, y);
-        frame.jInternalFrame1.setContentPane(ploteando);
-        frame.setVisible(true);
-        sleep(1000);
-        frame.actualizarEstadoBotones(true);
-        sleep(3000);
-        frame.actualizarEstadoBotones(false);
-        frame.jInternalFrame1.getContentPane().removeAll();
-        frame.jInternalFrame1.repaint();
+        
+        //Punto.separarCordenadas(ruta.getRuta(), coordenadas);
+        
+        
+                
+//        double coordY = {20.0,35.0,70.0,66.0,100.0};
         
         
         
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JInternalFrame jInternalFrame1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton botonCargar;
+    private javax.swing.JButton botonCompararDataset;
+    private javax.swing.JButton botonCompararTallas;
+    private javax.swing.JButton botonGenerar;
+    private javax.swing.JLabel datasetCargado;
+    private javax.swing.JInternalFrame framePlot;
+    private javax.swing.JPanel panelAlgoritmo;
+    private javax.swing.JPanel panelBotones;
+    private javax.swing.JPanel panelDatasets;
     // End of variables declaration//GEN-END:variables
 }

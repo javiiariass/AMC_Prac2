@@ -4,13 +4,20 @@
  */
 package com.amc_prac2.Main;
 
+import com.amc_prac2.Algoritmos.Ruta;
+import com.amc_prac2.Algoritmos.Voraz;
+import com.amc_prac2.GestorTSP.EscritorTSP;
 import com.amc_prac2.GestorTSP.LectorTSP;
 import com.amc_prac2.Punto.Punto;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+
 import javax.swing.JOptionPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -21,7 +28,50 @@ import org.math.plot.Plot2DPanel;
  * @author javi
  */
 public class AMC_Prac2 extends javax.swing.JFrame {
+    class contenedorTiempos{
+        int talla;
+        double tVUni;
+        double tVUniPoda;
+        double tVBi;
+        double tVBiPoda;
 
+        public contenedorTiempos(int talla, double tVUni, double tVUniPoda, double tVBi, double tVBiPoda) {
+            this.talla = talla;
+            this.tVUni = tVUni;
+            this.tVUniPoda = tVUniPoda;
+            this.tVBi = tVBi;
+            this.tVBiPoda = tVBiPoda;   
+        }
+        
+        @Override
+        public String toString() {
+            
+            return talla + "\t" + formateaStringDouble(tVUni, 5) + "\t" + formateaStringDouble(tVUniPoda, 5) + "\t" + formateaStringDouble(tVBi, 5) + "\t" + formateaStringDouble(tVBiPoda, 5) ;
+        } 
+    }
+    
+    class contenedorDosAlgoritmosTiempo{
+        int talla;
+        double tPrimero;
+        double tSegundo;
+//        double tVBi;
+//        double tVBiPoda;
+
+        public contenedorDosAlgoritmosTiempo(int talla, double tPrimero, double tSegundo) {
+            this.talla = talla;
+            this.tPrimero = tPrimero;
+            this.tSegundo = tSegundo;
+        }
+       
+
+        @Override
+        public String toString() {
+            
+            return talla + "\t" + formateaStringDouble(tPrimero, 5) + "\t" + formateaStringDouble(tSegundo, 5) ;
+        } 
+    }
+    
+    
     // ------------------------------------------------------------------------------------Inicializar------------------------------------------------------------------------------------
     private ArrayList<Punto> puntos;
 
@@ -34,6 +84,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
      private void iniciaComponentes() {
         // Inicialización adicional de componentes no manejada por initComponents
          actualizarEstadoBotones(false);
+         textoPanelOutput.setEditable(false);
         setVisible(true);
     }
     
@@ -53,8 +104,12 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         botonCargar = new javax.swing.JButton();
         panelAlgoritmo = new javax.swing.JPanel();
         botonCompararDataset = new javax.swing.JButton();
-        botonCompararTallas = new javax.swing.JButton();
+        botonCompararEstrategias = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         datasetCargado = new javax.swing.JLabel();
+        panelOutput = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        textoPanelOutput = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -118,10 +173,10 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             }
         });
 
-        botonCompararTallas.setText("<html>\nComparar <p>\nestrategias\n</html>\n");
-        botonCompararTallas.addActionListener(new java.awt.event.ActionListener() {
+        botonCompararEstrategias.setText("<html>\nComparar <p>\nestrategias\n</html>\n");
+        botonCompararEstrategias.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonCompararTallasActionPerformed(evt);
+                botonCompararEstrategiasActionPerformed(evt);
             }
         });
 
@@ -138,7 +193,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(botonCompararDataset, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonCompararTallas, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(botonCompararEstrategias, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelAlgoritmoLayout.setVerticalGroup(
@@ -147,20 +202,32 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(botonCompararDataset)
-                    .addComponent(botonCompararTallas))
+                    .addComponent(botonCompararEstrategias))
                 .addContainerGap())
         );
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
         panelBotones.setLayout(panelBotonesLayout);
         panelBotonesLayout.setHorizontalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBotonesLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelDatasets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panelAlgoritmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(9, Short.MAX_VALUE))
+                    .addGroup(panelBotonesLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelDatasets, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelAlgoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panelBotonesLayout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelBotonesLayout.setVerticalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,22 +236,48 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 .addComponent(panelDatasets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelAlgoritmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(194, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(jButton1)
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         datasetCargado.setText("Dataset actual:");
+
+        textoPanelOutput.setColumns(20);
+        textoPanelOutput.setRows(5);
+        jScrollPane1.setViewportView(textoPanelOutput);
+
+        javax.swing.GroupLayout panelOutputLayout = new javax.swing.GroupLayout(panelOutput);
+        panelOutput.setLayout(panelOutputLayout);
+        panelOutputLayout.setHorizontalGroup(
+            panelOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelOutputLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        panelOutputLayout.setVerticalGroup(
+            panelOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelOutputLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(datasetCargado, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                    .addComponent(framePlot))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelOutput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(datasetCargado, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                            .addComponent(framePlot))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -193,9 +286,13 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 .addComponent(datasetCargado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(framePlot)
-                    .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(15, 15, 15))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(framePlot)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(panelOutput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -206,7 +303,27 @@ public class AMC_Prac2 extends javax.swing.JFrame {
     // ------------------------------------------------------------------------------------Listeners------------------------------------------------------------------------------------
     
     private void botonGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGenerarActionPerformed
-        System.out.println(pedirDatoNum("talla"));
+        
+        // Pedimos talla a usuario
+        int talla = pedirDatoNum("talla");
+        
+        // Si seleccion valida creamos dataset
+        if(talla != -1){
+            // Vaciamos array actual si no esta vacio
+            puntos = new ArrayList<>();
+            
+            // Creamos array con la talla dada
+            Punto.rellenarPuntos(puntos, talla, false, 10);
+       
+            String nombre =  "dataset" + puntos.size();
+            // Guardamos array en carpeta datasets
+            EscritorTSP.guardarEnArchivo(puntos, nombre);
+            
+            
+            actualizarEstadoBotones(true);
+            actualizaTextoDatasetCargado(nombre);
+            actualizarFramePlot();
+        }    
     }//GEN-LAST:event_botonGenerarActionPerformed
 
     private void botonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCargarActionPerformed
@@ -222,49 +339,68 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             actualizaTextoDatasetCargado("");
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo válido", "Error en la selección", JOptionPane.ERROR_MESSAGE);
             actualizarEstadoBotones(false);
-            actualizarFramePlot();
+            
         }
         
         // Archivo valido y se ha cargado correctamente
         else{
             actualizarEstadoBotones(true);
             actualizaTextoDatasetCargado(archivo.getName());    
-            actualizarFramePlot(creaPlot2D(puntos));
+            actualizarFramePlot();
         }
+        
+        
     }//GEN-LAST:event_botonCargarActionPerformed
 
     private void botonCompararDatasetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararDatasetActionPerformed
-        // TODO add your handling code here:
+        try {
+            comprobarEstrategias();
+        } catch (Exception ex) {
+            Logger.getLogger(AMC_Prac2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_botonCompararDatasetActionPerformed
 
-    private void botonCompararTallasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararTallasActionPerformed
+    private void botonCompararEstrategiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararEstrategiasActionPerformed
         
         // Primer elemento de array -> tamanyo inicial
         // Segundo elemento -> incremento entre tallas
         // Tercer elemento -> numero de veces que realiza incrementos
         // Cuarto elemento -> numero de datasets por talla
+
         int[] datos = pedirTamanyo();
+        
+        // Para mejorar legibilidad 
+        int tamanoInicial = datos[0];
+        int incrementoTamano = datos[1];
+        int nIncrementos = datos[2];
+        int nDatasets = datos[3];
+        
+        
         
         // Si todos los datos son validos y el usuario no ha cancelado
         if(datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1){
             
+            contenedorTiempos[] contenedores = new contenedorTiempos[nIncrementos];
             // Talla inicial
-            int tallaActual = datos[0];
+            int tallaActual = tamanoInicial;
             // Repetimos tantas veces como numero de incrementos
-            for (int i = 0; i < datos[2]; i++) {
+            for (int i = 0; i < nIncrementos; i++) {
                 
-                experimento(tallaActual, 10);
+                contenedores[i] = experimento(tallaActual, nDatasets);
                 // Sumamos el incremento
-                tallaActual += datos[1];
+                tallaActual += incrementoTamano;
             }
+            
+            actualizarPanelOutput(contenedoresAString(contenedores));
         }
-        System.out.println(datos[0]);
-        System.out.println(datos[1]);
-        System.out.println(datos[2]);
-        System.out.println(datos[3]);
         
+    }//GEN-LAST:event_botonCompararEstrategiasActionPerformed
 
-    }//GEN-LAST:event_botonCompararTallasActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     
     // ------------------------------------------------------------------------------------Actualizar------------------------------------------------------------------------------------
@@ -277,6 +413,10 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         //botonCompararTallas.setEnabled(datasetCargado);
     }
     
+    /**
+     * Pinta un Plot2DPanel en el subframe
+     * @param panel Plot2DPanel
+     */
     private void actualizarFramePlot(Plot2DPanel panel){
         framePlot.setContentPane(panel);
         framePlot.repaint();
@@ -290,6 +430,24 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         framePlot.revalidate(); // Actualiza el layout
         framePlot.repaint();
     }
+    
+    /**
+     * Escribe en el panel inferior el texto pasado por parametro
+     * @param texto texto a escribir
+     */
+    private void actualizarPanelOutput(String texto){
+        textoPanelOutput.setText(texto);
+    }
+    
+    /**
+     * limpia el texto en el panel inferior
+     */
+    private void actualizarPanelOutput(){
+        textoPanelOutput.setText("");
+    }
+    
+ 
+    
     
     // ------------------------------------------------------------------------------------Ventanas------------------------------------------------------------------------------------
     private File lectorTSPGrafico() {
@@ -385,16 +543,63 @@ public class AMC_Prac2 extends javax.swing.JFrame {
    
     
     // ------------------------------------------------------------------------------------Auxiliares------------------------------------------------------------------------------------
-    private Plot2DPanel creaPlot2D(ArrayList<Punto> puntos){
+    
+    /**
+     * Devuelve el numero pasado por parametro con el numero de decimales indicado
+     * @param numero numero a formatear
+     * @param numPrecision valor de la precisión para el formato (10 decimales, 1 decimal,etc)
+     * @return devuelve el numero con la precisión pasada por parámetro
+     */
+    private double formateaDouble(double numero, int numPrecision){
+        String distanciaFormateadaStr = String.format(Locale.US,"%." + numPrecision + "f", numero);
+        return Double.parseDouble(distanciaFormateadaStr);
+    }
+    
+    /**
+     * Devuelve tipo String del numero pasado por parametro con el numero de decimales indicado
+     * @param numero a formatear
+     * @param numPrecision valor de la precisión para el formato (10 decimales, 1 decimal,etc)
+     * @return devuelve String con el numero en la precisión pasada por parámetro
+     */
+    private String formateaStringDouble(double numero, int numPrecision){
+        return String.format(Locale.US,"%." + numPrecision + "f", numero);
+    }
+    
+   
+    
+    /**
+     * crea plot de los puntos en el array
+     * @param puntos
+     * @return
+     * @throws Exception 
+     */
+    private void creaPlot2DGrafo(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception{
         double[][] coordenadas = new double[2][];
         Punto.separarCordenadas(puntos, coordenadas);
         
-        Plot2DPanel plot = new Plot2DPanel();
-        plot.addScatterPlot("pruebaPlot", Color.BLUE, coordenadas[0], coordenadas[1]);
-        plot.addLinePlot("Unidireccional", Color.RED, coordenadas[0], coordenadas[1]);
         
-        return plot;
+        plot.addScatterPlot(nombrePlot, color, coordenadas[0], coordenadas[1]);
+        
+       
     }
+    
+    /**
+     * Crea la ruta recorriendo los puntos del array
+     * @param puntos
+     * @return
+     * @throws Exception 
+     */
+    private void creaPlot2DRuta(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception{
+        double[][] coordenadas = new double[2][];
+        Punto.separarCordenadas(puntos, coordenadas);
+        
+        
+        plot.addLinePlot(nombrePlot, color, coordenadas[0], coordenadas[1]);
+        
+        
+    }
+    
+    
     
     /**
      * Genera n datasets aleatorios con la talla pasada por parametro
@@ -402,10 +607,154 @@ public class AMC_Prac2 extends javax.swing.JFrame {
      * los datasets
      * @param talla tamanyo de los datasets a generar 
      */
-    private void experimento(int talla, int n){
+    private contenedorTiempos experimento(int talla, int n){
+        ArrayList<Punto> listaPuntos;
+        int puntoInicial;
+        
+        // Arrays para resultados 
+        // 0: vUni
+        // 1: vUniPoda
+        // 2: vBi
+        // 3: vBiPoda
+        //Ruta vUni, vUniPoda, vBi, vBiPoda;
+        Ruta ruta;
+        double tMedioUni = 0;
+        double tMedioUniPoda = 0;
+        double tMedioBi = 0;
+        double tMedioBiPoda = 0;
+        double tInicio, tFin,tEjecucion;
         for (int i = 0; i < n; i++) {
+            listaPuntos = new ArrayList<>();
+            // Genero dataset de la talla pedida
+            Punto.rellenarPuntos(listaPuntos, talla, false, 10);
+            puntoInicial = Punto.puntoInicial(listaPuntos);
             
+                        // Aplicamos las 4 estrategias midiendo
+            
+            
+            // Unidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUni += tEjecucion;    // Lo anyadimos al tiempo medio
+            
+            
+            
+            // Unidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUniPoda += tEjecucion;    // Lo anyadimos al tiempo medio
+            
+            // Bidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBi += tEjecucion;    // Lo anyadimos al tiempo medio
+            
+            // Bidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);   
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBiPoda += tEjecucion;    // Lo anyadimos al tiempo medio   
         }
+        
+        // Calculamos tiempo medio dividiendo entre el total de iteraciones
+        tMedioUni = tMedioUni / n;
+        tMedioUniPoda = tMedioUniPoda / n;
+        tMedioBi = tMedioBi / n;
+        tMedioBiPoda = tMedioBiPoda / n;
+        
+        
+        return new contenedorTiempos(talla,tMedioUni,tMedioUniPoda,tMedioBi,tMedioBiPoda);
+    }
+    
+    private String contenedoresAString(contenedorTiempos[] contenedores){
+        String texto;
+        
+        texto = "\tVorazUni\tVorazUniPoda\tVorazBi\tVorazBiPoda";
+        texto += "\ntallas\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)"; 
+        for(contenedorTiempos i : contenedores){
+            texto += "\n" + i.toString();
+        }
+        
+        
+        return texto;
+    }
+    
+    private void comprobarEstrategias() throws Exception{
+        
+            // Aplicamos las 4 estrategias midiendo
+        String solucion = datasetCargado.getText() + "\nEstrategia\t\tsolucion\tcalculadas\ttiempo(mseg)";
+        double tInicio = 0;
+        double tFin = 0;
+        double tEjecucion = 0;
+        Ruta ruta;
+        Plot2DPanel panel = new Plot2DPanel();
+        creaPlot2DGrafo(puntos, "puntos", panel, Color.RED);
+        
+        
+        int puntoInicial = Punto.puntoInicial(puntos);
+        
+        // Unidireccional sin poda
+        tInicio = System.nanoTime();    // Capturamos tiempo inicio
+        ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(puntos), puntoInicial);
+        tFin = System.nanoTime();       // Capturamos tiempo fin
+        // Pasamos tiempo de nanosegundos a msegundos
+        tEjecucion = (tFin - tInicio) / 1_000_000.0;
+        
+        solucion+= "\nUnidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+       // panel.add(creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva"));
+        creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva", panel, Color.BLUE);
+        
+        
+        // Unidireccional con poda
+        tInicio = System.nanoTime();    // Capturamos tiempo inicio
+        ruta = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<>(puntos), puntoInicial);
+        tFin = System.nanoTime();       // Capturamos tiempo fin
+        // Pasamos tiempo de nanosegundos a msegundos
+        tEjecucion = (tFin - tInicio) / 1_000_000.0;
+        solucion+= "\nUnidireccional con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        //panel.add(creaPlot2DRuta(ruta.getRuta(), "UniPoda"));
+        creaPlot2DRuta(ruta.getRuta(), "UniPoda", panel, Color.GREEN);
+        
+        
+        
+        // Bidireccional sin poda
+        tInicio = System.nanoTime();    // Capturamos tiempo inicio
+        ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(puntos), puntoInicial);
+        tFin = System.nanoTime();       // Capturamos tiempo fin
+        // Pasamos tiempo de nanosegundos a msegundos
+        tEjecucion = (tFin - tInicio) / 1_000_000.0;
+        solucion+= "\nBidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+       // panel.add(creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva"));
+        creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva", panel, Color.MAGENTA);
+        
+        
+        
+        // Bidireccional con poda
+        tInicio = System.nanoTime();    // Capturamos tiempo inicio
+        ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(puntos), puntoInicial);   
+        tFin = System.nanoTime();       // Capturamos tiempo fin
+        // Pasamos tiempo de nanosegundos a msegundos
+        tEjecucion = (tFin - tInicio) / 1_000_000.0;
+        solucion+= "\nBidireciconal con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        //panel.add(creaPlot2DRuta(ruta.getRuta(), "BiPoda"));
+        creaPlot2DRuta(ruta.getRuta(), "BiPoda", panel, Color.PINK);
+        
+        
+        
+        actualizarFramePlot(panel);
+        actualizarPanelOutput(solucion);
+        
     }
     
     // ------------------------------------------------------------------------------------MAIN------------------------------------------------------------------------------------
@@ -452,12 +801,16 @@ public class AMC_Prac2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonCargar;
     private javax.swing.JButton botonCompararDataset;
-    private javax.swing.JButton botonCompararTallas;
+    private javax.swing.JButton botonCompararEstrategias;
     private javax.swing.JButton botonGenerar;
     private javax.swing.JLabel datasetCargado;
     private javax.swing.JInternalFrame framePlot;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelAlgoritmo;
     private javax.swing.JPanel panelBotones;
     private javax.swing.JPanel panelDatasets;
+    private javax.swing.JPanel panelOutput;
+    private javax.swing.JTextArea textoPanelOutput;
     // End of variables declaration//GEN-END:variables
 }

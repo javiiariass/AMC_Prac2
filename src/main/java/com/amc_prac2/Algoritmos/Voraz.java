@@ -7,6 +7,7 @@ package com.amc_prac2.Algoritmos;
 import java.util.ArrayList;
 
 import com.amc_prac2.Punto.Punto;
+import static java.lang.Thread.sleep;
 import java.util.Arrays;
 import java.util.List;
 
@@ -277,29 +278,20 @@ public class Voraz {
      * @return devuelve objeto de tipo Ruta -> contiene array con la solucion,
      * la distancia total y el numero de veces que ha tenido que calcular la
      * distancia euclidea
-     * @throws java.lang.InterruptedException
      */
-    public static Ruta UnidireccionalExhaustivaPoda(ArrayList<Punto> puntos, int ciudadInicial) throws InterruptedException {
+    public static Ruta UnidireccionalExhaustivaPoda(ArrayList<Punto> puntos, int ciudadInicial){
 
         // La poda hay que realizarla en el segundo bucle, cuando la distancia en el eje ordenado por 
         // quicksort sea mayor o igual a la distancia euclidea menor actual
-        System.out.println("Posicion inicial punto: " + ciudadInicial);
-        System.out.println("Punto: " + puntos.get(ciudadInicial));
         
         // Al ordenar los puntos la ciudad inicial dejara de estar en la posicion que estaba.
         // Debemos buscarla para empezar por el mismo punto en todos los algoritmos
-        Punto aux = puntos.get(ciudadInicial);
-        
+        Punto puntoInicial = puntos.get(ciudadInicial);
         
         // Primero ordenamos el array haciendo uso de quicksort
         Quicksort.quickSort(puntos);
         
-        ciudadInicial = puntos.indexOf(aux);
-        
-        System.out.println("Posicion punto nueva : " + ciudadInicial);
-        System.out.println("Punto: " + puntos.get(ciudadInicial));
-        
-        Thread.sleep(3000);
+        ciudadInicial = puntos.indexOf(puntoInicial);
         
         int numCiudades = puntos.size();
         // Todos los valores boolean toman por defecto el valor false

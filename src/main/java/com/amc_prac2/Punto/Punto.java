@@ -184,8 +184,20 @@ public class Punto {
      * @param puntos Lista de puntos
      */
     public static void vaciaPuntos(ArrayList<Punto> puntos){
-        if(!puntos.isEmpty())
-            puntos.clear();
+//        if(puntos != null)
+//            if(!puntos.isEmpty())
+//                puntos.clear();
+        puntos = new ArrayList<>();
+    }
+    
+    /**
+     * Devuelve un entero aleatorio entre 0 y nPuntos - 1
+     * @param puntos
+     * @return 
+     */
+    public static int puntoInicial(ArrayList<Punto> puntos){
+        Random rnd = new Random(System.currentTimeMillis());
+        return rnd.nextInt(puntos.size());
     }
 
 }

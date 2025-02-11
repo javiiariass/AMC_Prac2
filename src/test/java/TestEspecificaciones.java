@@ -92,8 +92,7 @@ public class TestEspecificaciones {
 
                     }
                     case 4 -> {
-                        Random rnd = new Random(System.currentTimeMillis());
-                        int inicial = rnd.nextInt(puntos.size());
+                        int inicial = Punto.puntoInicial(puntos);
                         System.out.println("Inicial: " + inicial);
                         Ruta rutaUni = Voraz.UnidireccionalExhaustiva(puntos, inicial);
                         Ruta rutaUniPoda = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<Punto>(puntos), inicial);

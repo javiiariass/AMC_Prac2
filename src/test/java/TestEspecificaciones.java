@@ -145,7 +145,7 @@ public class TestEspecificaciones {
                         }
 
                         Ruta ruta = null;
-                        Ruta rutaAdri = null;
+                       
                         System.out.println("1. Voraz unidireccional sin poda");
                         System.out.println("2. Voraz bidireccional sin poda");
                         System.out.println("3. Voraz unidireccional con poda");
@@ -158,19 +158,19 @@ public class TestEspecificaciones {
                         switch (opcion) {
                             case 1 -> {
                                 ruta = Voraz.UnidireccionalExhaustiva(puntos, inicial);
-                                rutaAdri = new Ruta(Voraz.vorazUnidireccional(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                                
                             }
                             case 2 -> {
                                 ruta = Voraz.BidireccionalExhaustiva(puntos, inicial);
-                                rutaAdri = new Ruta(Voraz.vorazBidireccional(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                                
                             }
                             case 3 -> {
                                 ruta = Voraz.UnidireccionalExhaustivaPoda(puntos, inicial);
-                                rutaAdri = new Ruta(Voraz.vorazUnidireccionalPoda(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                                
                             }
                             case 4 -> {
                                 ruta = Voraz.BidireccionalExhaustivaPoda(puntos, inicial);
-                                rutaAdri = new Ruta(Voraz.vorazBidireccionalPoda(puntos, inicial), Voraz.getSolucion(), Voraz.getCont());
+                                
                             }
 
                             default -> {
@@ -183,13 +183,10 @@ public class TestEspecificaciones {
                             break;
                         }
 
-                        System.out.println("Mi solucion"
-                                + "-------------------------");
+                        System.out.println("solucion"
+                                + "\n-------------------------");
                         System.out.println(ruta);
-                        System.out.println("""
-                                           Solucion adri
-                                   --------------------------""");
-                        System.out.println(rutaAdri);
+                        
                         //coordenadas[0] -> array de coord eje X
                         //coordenadas[1] -> array de coord eje Y
                         double[][] coordenadas = new double[2][];

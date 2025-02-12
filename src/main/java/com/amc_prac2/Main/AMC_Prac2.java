@@ -12,13 +12,18 @@ import com.amc_prac2.Punto.Punto;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.math.plot.Plot2DPanel;
@@ -28,7 +33,9 @@ import org.math.plot.Plot2DPanel;
  * @author javi
  */
 public class AMC_Prac2 extends javax.swing.JFrame {
-    class contenedorTiempos{
+
+    class contenedorTiempos {
+
         int talla;
         double tVUni;
         double tVUniPoda;
@@ -40,17 +47,38 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             this.tVUni = tVUni;
             this.tVUniPoda = tVUniPoda;
             this.tVBi = tVBi;
-            this.tVBiPoda = tVBiPoda;   
+            this.tVBiPoda = tVBiPoda;
         }
-        
+
+        public int getTalla() {
+            return talla;
+        }
+
+        public double getTVuni() {
+            return tVUni;
+        }
+
+        public double getTVuniPoda() {
+            return tVUniPoda;
+        }
+
+        public double getTBi() {
+            return tVBi;
+        }
+
+        public double getTBiPoda() {
+            return tVBiPoda;
+        }
+
         @Override
         public String toString() {
-            
-            return talla + "\t" + formateaStringDouble(tVUni, 5) + "\t" + formateaStringDouble(tVUniPoda, 5) + "\t" + formateaStringDouble(tVBi, 5) + "\t" + formateaStringDouble(tVBiPoda, 5) ;
-        } 
+
+            return talla + "\t" + formateaStringDouble(tVUni, 5) + "\t" + formateaStringDouble(tVUniPoda, 5) + "\t" + formateaStringDouble(tVBi, 5) + "\t" + formateaStringDouble(tVBiPoda, 5);
+        }
     }
-    
-    class contenedorDosAlgoritmosTiempo{
+
+    class contenedorDosAlgoritmosTiempo {
+
         int talla;
         double tPrimero;
         double tSegundo;
@@ -62,16 +90,14 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             this.tPrimero = tPrimero;
             this.tSegundo = tSegundo;
         }
-       
 
         @Override
         public String toString() {
-            
-            return talla + "\t" + formateaStringDouble(tPrimero, 5) + "\t" + formateaStringDouble(tSegundo, 5) ;
-        } 
+
+            return talla + "\t" + formateaStringDouble(tPrimero, 5) + "\t" + formateaStringDouble(tSegundo, 5);
+        }
     }
-    
-    
+
     // ------------------------------------------------------------------------------------Inicializar------------------------------------------------------------------------------------
     private ArrayList<Punto> puntos;
 
@@ -81,13 +107,13 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         //puntos = new ArrayList<>();
     }
 
-     private void iniciaComponentes() {
+    private void iniciaComponentes() {
         // Inicialización adicional de componentes no manejada por initComponents
-         actualizarEstadoBotones(false);
-         textoPanelOutput.setEditable(false);
+        actualizarEstadoBotones(false);
+        textoPanelOutput.setEditable(false);
         setVisible(true);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -105,6 +131,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         panelAlgoritmo = new javax.swing.JPanel();
         botonCompararDataset = new javax.swing.JButton();
         botonCompararEstrategias = new javax.swing.JButton();
+        botonCompararDosEstrategias = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         datasetCargado = new javax.swing.JLabel();
         panelOutput = new javax.swing.JPanel();
@@ -123,7 +150,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         );
         framePlotLayout.setVerticalGroup(
             framePlotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 324, Short.MAX_VALUE)
         );
 
         botonGenerar.setText("Generar dataset");
@@ -180,6 +207,20 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             }
         });
 
+        botonCompararDosEstrategias.setText("<html>Comparar 2<p>\nestrategias</html>");
+        botonCompararDosEstrategias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCompararDosEstrategiasActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("<html>Unidireccional <p>\nVS <p>\nBidireccional</html>");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         TitledBorder bordePanelAlgoritmo = BorderFactory.createTitledBorder("Estudio Algoritmos");
         bordePanelAlgoritmo.setTitleJustification(TitledBorder.CENTER);
 
@@ -191,9 +232,13 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelAlgoritmoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(botonCompararDataset, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(botonCompararDosEstrategias)
+                    .addComponent(botonCompararDataset, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonCompararEstrategias, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(botonCompararEstrategias, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelAlgoritmoLayout.setVerticalGroup(
@@ -201,32 +246,26 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             .addGroup(panelAlgoritmoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(botonCompararDataset)
+                    .addComponent(botonCompararDataset, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(botonCompararEstrategias))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelAlgoritmoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(botonCompararDosEstrategias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        panelAlgoritmoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {botonCompararDataset, botonCompararDosEstrategias, botonCompararEstrategias, jButton1});
 
         javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
         panelBotones.setLayout(panelBotonesLayout);
         panelBotonesLayout.setHorizontalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBotonesLayout.createSequentialGroup()
-                .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBotonesLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelDatasets, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelAlgoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(panelBotonesLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jButton1)))
+                .addContainerGap()
+                .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(panelDatasets, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelAlgoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelBotonesLayout.setVerticalGroup(
@@ -236,9 +275,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 .addComponent(panelDatasets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelAlgoritmo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(jButton1)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         datasetCargado.setText("Dataset actual:");
@@ -260,7 +297,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             panelOutputLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelOutputLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -298,58 +335,55 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
     // ------------------------------------------------------------------------------------Listeners------------------------------------------------------------------------------------
-    
+
     private void botonGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGenerarActionPerformed
-        
+
         // Pedimos talla a usuario
         int talla = pedirDatoNum("talla");
-        
+
         // Si seleccion valida creamos dataset
-        if(talla != -1){
+        if (talla != -1) {
             // Vaciamos array actual si no esta vacio
             puntos = new ArrayList<>();
-            
+
             // Creamos array con la talla dada
             Punto.rellenarPuntos(puntos, talla, false, 10);
-       
-            String nombre =  "dataset" + puntos.size();
+
+            String nombre = "dataset" + puntos.size();
             // Guardamos array en carpeta datasets
             EscritorTSP.guardarEnArchivo(puntos, nombre);
-            
-            
+
             actualizarEstadoBotones(true);
             actualizaTextoDatasetCargado(nombre);
             actualizarFramePlot();
-        }    
+            actualizarPanelOutput();
+        }
     }//GEN-LAST:event_botonGenerarActionPerformed
 
     private void botonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCargarActionPerformed
         File archivo = lectorTSPGrafico();
-        
+
         // Si seleccion valida
         if (archivo != null) {
             puntos = LectorTSP.lectorArchivo(archivo);
-        } 
-        
+        }
+
         // Si seleccion invalida o no se ha podido cargar el archivo valido
-        if(archivo == null || puntos == null){
+        if (archivo == null || puntos == null) {
             actualizaTextoDatasetCargado("");
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo válido", "Error en la selección", JOptionPane.ERROR_MESSAGE);
             actualizarEstadoBotones(false);
-            
-        }
-        
-        // Archivo valido y se ha cargado correctamente
-        else{
+
+        } // Archivo valido y se ha cargado correctamente
+        else {
             actualizarEstadoBotones(true);
-            actualizaTextoDatasetCargado(archivo.getName());    
+            actualizaTextoDatasetCargado(archivo.getName());
             actualizarFramePlot();
+            actualizarPanelOutput();
         }
-        
-        
+
+
     }//GEN-LAST:event_botonCargarActionPerformed
 
     private void botonCompararDatasetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararDatasetActionPerformed
@@ -358,51 +392,51 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(AMC_Prac2.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_botonCompararDatasetActionPerformed
 
     private void botonCompararEstrategiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararEstrategiasActionPerformed
-        
+
         // Primer elemento de array -> tamanyo inicial
         // Segundo elemento -> incremento entre tallas
         // Tercer elemento -> numero de veces que realiza incrementos
         // Cuarto elemento -> numero de datasets por talla
-
         int[] datos = pedirTamanyo();
-        
+
         // Para mejorar legibilidad 
         int tamanoInicial = datos[0];
         int incrementoTamano = datos[1];
         int nIncrementos = datos[2];
         int nDatasets = datos[3];
-        
-        
-        
+
         // Si todos los datos son validos y el usuario no ha cancelado
-        if(datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1){
-            
+        if (datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1) {
+
             contenedorTiempos[] contenedores = new contenedorTiempos[nIncrementos];
             // Talla inicial
             int tallaActual = tamanoInicial;
             // Repetimos tantas veces como numero de incrementos
             for (int i = 0; i < nIncrementos; i++) {
-                
+
                 contenedores[i] = experimento(tallaActual, nDatasets);
                 // Sumamos el incremento
                 tallaActual += incrementoTamano;
             }
-            
+
             actualizarPanelOutput(contenedoresAString(contenedores));
         }
-        
+
     }//GEN-LAST:event_botonCompararEstrategiasActionPerformed
 
+    private void botonCompararDosEstrategiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompararDosEstrategiasActionPerformed
+        compararDosEstrategias();        // TODO add your handling code here:
+
+    }//GEN-LAST:event_botonCompararDosEstrategiasActionPerformed
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
+        compararUniBi();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    
     // ------------------------------------------------------------------------------------Actualizar------------------------------------------------------------------------------------
     private void actualizaTextoDatasetCargado(String nombre) {
         datasetCargado.setText("Dataset actual: " + nombre);
@@ -412,43 +446,43 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         botonCompararDataset.setEnabled(datasetCargado);
         //botonCompararTallas.setEnabled(datasetCargado);
     }
-    
+
     /**
      * Pinta un Plot2DPanel en el subframe
+     *
      * @param panel Plot2DPanel
      */
-    private void actualizarFramePlot(Plot2DPanel panel){
+    private void actualizarFramePlot(Plot2DPanel panel) {
         framePlot.setContentPane(panel);
         framePlot.repaint();
     }
+
     /**
      * Elimina el plot actual del subframe
-     * 
+     *
      */
-    private void actualizarFramePlot(){
+    private void actualizarFramePlot() {
         framePlot.getContentPane().removeAll(); // Elimina todo el contenido
         framePlot.revalidate(); // Actualiza el layout
         framePlot.repaint();
     }
-    
+
     /**
      * Escribe en el panel inferior el texto pasado por parametro
+     *
      * @param texto texto a escribir
      */
-    private void actualizarPanelOutput(String texto){
+    private void actualizarPanelOutput(String texto) {
         textoPanelOutput.setText(texto);
     }
-    
+
     /**
      * limpia el texto en el panel inferior
      */
-    private void actualizarPanelOutput(){
+    private void actualizarPanelOutput() {
         textoPanelOutput.setText("");
     }
-    
- 
-    
-    
+
     // ------------------------------------------------------------------------------------Ventanas------------------------------------------------------------------------------------
     private File lectorTSPGrafico() {
         JFileChooser selectorArchivo = new JFileChooser();
@@ -468,149 +502,165 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             return null;
         }
     }
-    
+
     /**
      * Ventana dialogo que permite pedir un numero entero positivo
+     *
      * @param dato nombre del dato a pedir
      * @return devuelve entero positivo
      */
-    private int pedirDatoNum(String dato){
-        String entrada; 
+    private int pedirDatoNum(String dato) {
+        String entrada;
         boolean entradaValida = false;
         int numero;
-        do{
-            
-            entrada = JOptionPane.showInputDialog(null, "Por favor, introduce " + dato + ":");
+        do {
 
-            
+            entrada = JOptionPane.showInputDialog(null, "Por favor, introduce " + dato + ":");
 
             try {
                 if (entrada == null) {
-                // El usuario ha pulsado "Cancelar" o ha cerrado el cuadro de diálogo
-                JOptionPane.showMessageDialog(null, "Operación cancelada.");
-                numero = -1;
-                }else{
+                    // El usuario ha pulsado "Cancelar" o ha cerrado el cuadro de diálogo
+                    JOptionPane.showMessageDialog(null, "Operación cancelada.");
+                    numero = -1;
+                } else {
                     numero = Integer.parseInt(entrada);
-                    if(numero < 0) throw new NumberFormatException();
+                    if (numero < 0) {
+                        throw new NumberFormatException();
+                    }
                     entradaValida = true;
                 }
-                
+
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Entrada no válida. Por favor, introduce " + dato +" válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Entrada no válida. Por favor, introduce " + dato + " válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 numero = -1;
             }
 
-        }while(!entradaValida && entrada!=null);
-        
-            
-        
-        
+        } while (!entradaValida && entrada != null);
+
         return numero;
     }
-    
+
     /**
      * Primer elemento de array -> tamanyo inicial
-     *<p>Segundo elemento -> incremento entre tallas
-     *<p>Tercer elemento -> numero de veces que realiza incrementos
-     *<p>Cuarto elemento -> numero de datasets por talla
-     * @return 
+     * <p>
+     * Segundo elemento -> incremento entre tallas
+     * <p>
+     * Tercer elemento -> numero de veces que realiza incrementos
+     * <p>
+     * Cuarto elemento -> numero de datasets por talla
+     *
+     * @return
      */
-    private int[] pedirTamanyo(){
+    private int[] pedirTamanyo() {
         // Primer elemento de array -> tamanyo inicial
         // Segundo elemento -> incremento
         // Tercer elemento -> numero de incrementos
-        
+
         // Por defecto, entrada invalida
-        int[] datos = {-1,-1,-1,-1};
-        
+        int[] datos = {-1, -1, -1, -1};
+
         // Ahorramos al usuario ventanas emergentes innecesarias si cancela antes
         datos[0] = pedirDatoNum("tamaño inicial");
-        if(datos[0] != -1){
+        if (datos[0] != -1) {
             datos[1] = pedirDatoNum("incremento");
-            
-            if(datos[1] != -1){
+
+            if (datos[1] != -1) {
                 datos[2] = pedirDatoNum("numero de incrementos");
-                
-                if(datos[2] != -1)
+
+                if (datos[2] != -1) {
                     datos[3] = pedirDatoNum("numero de datasets por talla");
+                }
             }
-                
-            
+
         }
-        
+
         return datos;
     }
-   
-    
+
+    private String[] pedirEstrategias() {
+        String[] estrategias = {
+            "Unidireccional Exhaustiva",
+            "Unidireccional Poda",
+            "Bidireccional Exhautiva",
+            "Bidireccional Poda"
+        };
+
+        int primeraEstrategia = JOptionPane.showConfirmDialog(this, new JComboBox<>(estrategias), "Elige estrategia", OK_CANCEL_OPTION);
+
+        System.out.println(primeraEstrategia);
+        return null;
+    }
+
     // ------------------------------------------------------------------------------------Auxiliares------------------------------------------------------------------------------------
-    
     /**
-     * Devuelve el numero pasado por parametro con el numero de decimales indicado
+     * Devuelve el numero pasado por parametro con el numero de decimales
+     * indicado
+     *
      * @param numero numero a formatear
-     * @param numPrecision valor de la precisión para el formato (10 decimales, 1 decimal,etc)
+     * @param numPrecision valor de la precisión para el formato (10 decimales,
+     * 1 decimal,etc)
      * @return devuelve el numero con la precisión pasada por parámetro
      */
-    private double formateaDouble(double numero, int numPrecision){
-        String distanciaFormateadaStr = String.format(Locale.US,"%." + numPrecision + "f", numero);
+    private double formateaDouble(double numero, int numPrecision) {
+        String distanciaFormateadaStr = String.format(Locale.US, "%." + numPrecision + "f", numero);
         return Double.parseDouble(distanciaFormateadaStr);
     }
-    
+
     /**
-     * Devuelve tipo String del numero pasado por parametro con el numero de decimales indicado
+     * Devuelve tipo String del numero pasado por parametro con el numero de
+     * decimales indicado
+     *
      * @param numero a formatear
-     * @param numPrecision valor de la precisión para el formato (10 decimales, 1 decimal,etc)
-     * @return devuelve String con el numero en la precisión pasada por parámetro
+     * @param numPrecision valor de la precisión para el formato (10 decimales,
+     * 1 decimal,etc)
+     * @return devuelve String con el numero en la precisión pasada por
+     * parámetro
      */
-    private String formateaStringDouble(double numero, int numPrecision){
-        return String.format(Locale.US,"%." + numPrecision + "f", numero);
+    private String formateaStringDouble(double numero, int numPrecision) {
+        return String.format(Locale.US, "%." + numPrecision + "f", numero);
     }
-    
-   
-    
+
     /**
      * crea plot de los puntos en el array
+     *
      * @param puntos
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    private void creaPlot2DGrafo(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception{
+    private void creaPlot2DGrafo(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception {
         double[][] coordenadas = new double[2][];
         Punto.separarCordenadas(puntos, coordenadas);
-        
-        
+
         plot.addScatterPlot(nombrePlot, color, coordenadas[0], coordenadas[1]);
-        
-       
+
     }
-    
+
     /**
      * Crea la ruta recorriendo los puntos del array
+     *
      * @param puntos
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    private void creaPlot2DRuta(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception{
+    private void creaPlot2DRuta(ArrayList<Punto> puntos, String nombrePlot, Plot2DPanel plot, Color color) throws Exception {
         double[][] coordenadas = new double[2][];
         Punto.separarCordenadas(puntos, coordenadas);
-        
-        
+
         plot.addLinePlot(nombrePlot, color, coordenadas[0], coordenadas[1]);
-        
-        
+
     }
-    
-    
-    
+
     /**
      * Genera n datasets aleatorios con la talla pasada por parametro
-     * <p> devuelve el tiempo medio que tarda en encontrar la ruta de 
-     * los datasets
-     * @param talla tamanyo de los datasets a generar 
+     * <p>
+     * devuelve el tiempo medio que tarda en encontrar la ruta de los datasets
+     *
+     * @param talla tamanyo de los datasets a generar
      */
-    private contenedorTiempos experimento(int talla, int n){
+    private contenedorTiempos experimento(int talla, int n) {
         ArrayList<Punto> listaPuntos;
         int puntoInicial;
-        
+
         // Arrays para resultados 
         // 0: vUni
         // 1: vUniPoda
@@ -622,16 +672,14 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         double tMedioUniPoda = 0;
         double tMedioBi = 0;
         double tMedioBiPoda = 0;
-        double tInicio, tFin,tEjecucion;
+        double tInicio, tFin, tEjecucion;
         for (int i = 0; i < n; i++) {
             listaPuntos = new ArrayList<>();
             // Genero dataset de la talla pedida
             Punto.rellenarPuntos(listaPuntos, talla, false, 10);
             puntoInicial = Punto.puntoInicial(listaPuntos);
-            
-                        // Aplicamos las 4 estrategias midiendo
-            
-            
+
+            // Aplicamos las 4 estrategias midiendo
             // Unidireccional sin poda
             tInicio = System.nanoTime();    // Capturamos tiempo inicio
             ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
@@ -639,7 +687,179 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             // Pasamos tiempo de nanosegundos a msegundos
             tEjecucion = (tFin - tInicio) / 1_000_000.0;
             tMedioUni += tEjecucion;    // Lo anyadimos al tiempo medio
+
+            // Unidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUniPoda += tEjecucion;    // Lo anyadimos al tiempo medio
+
+            // Bidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBi += tEjecucion;    // Lo anyadimos al tiempo medio
+
+            // Bidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBiPoda += tEjecucion;    // Lo anyadimos al tiempo medio   
+        }
+
+        // Calculamos tiempo medio dividiendo entre el total de iteraciones
+        tMedioUni = tMedioUni / n;
+        tMedioUniPoda = tMedioUniPoda / n;
+        tMedioBi = tMedioBi / n;
+        tMedioBiPoda = tMedioBiPoda / n;
+
+        return new contenedorTiempos(talla, tMedioUni, tMedioUniPoda, tMedioBi, tMedioBiPoda);
+    }
+
+    /**
+     * Genera n datasets aleatorios con la talla pasada por parametro
+     * <p>
+     * devuelve el tiempo medio que tarda en encontrar la ruta de los datasets
+     *
+     * @param talla tamanyo de los datasets a generar
+     */
+    private contenedorTiempos experimento(int talla, int n, String[] distancias) {
+        ArrayList<Punto> listaPuntos;
+        int puntoInicial;
+
+        // Arrays para resultados 
+        // 0: vUni
+        // 1: vUniPoda
+        // 2: vBi
+        // 3: vBiPoda
+        //Ruta vUni, vUniPoda, vBi, vBiPoda;
+        Ruta ruta;
+        double tMedioUni = 0;
+        double tMedioUniPoda = 0;
+        double tMedioBi = 0;
+        double tMedioBiPoda = 0;
+        double tInicio, tFin, tEjecucion;
+        int[] costes = new int[4];
+        for (int i = 0; i < n; i++) {
+            listaPuntos = new ArrayList<>();
+            // Genero dataset de la talla pedida
+            Punto.rellenarPuntos(listaPuntos, talla, false, 10);
+            puntoInicial = Punto.puntoInicial(listaPuntos);
+
+            // Aplicamos las 4 estrategias midiendo
+            // Unidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUni += tEjecucion;    // Lo anyadimos al tiempo medio
+            costes[0] += ruta.getCosteTotal();
+
+            // Unidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUniPoda += tEjecucion;    // Lo anyadimos al tiempo medio
+            costes[1] += ruta.getCosteTotal();
+
+            // Bidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBi += tEjecucion;    // Lo anyadimos al tiempo medio
+            costes[2] += ruta.getCosteTotal();
+
+            // Bidireccional con poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBiPoda += tEjecucion;    // Lo anyadimos al tiempo medio   
+            costes[3] += ruta.getCosteTotal();
+        }
+
+        
+        for(int i = 0; i<3;i++){
+            distancias[i] = Integer.toString(costes[i]/n);
+        }
+        
+        // Calculamos tiempo medio dividiendo entre el total de iteraciones
+        tMedioUni = tMedioUni / n;
+        tMedioUniPoda = tMedioUniPoda / n;
+        tMedioBi = tMedioBi / n;
+        tMedioBiPoda = tMedioBiPoda / n;
+
+        return new contenedorTiempos(talla, tMedioUni, tMedioUniPoda, tMedioBi, tMedioBiPoda);
+    }
+    
+    /**
+     * Genera n datasets aleatorios con la talla pasada por parametro
+     * <p>
+     * devuelve el tiempo medio que tarda en encontrar la ruta de los datasets
+     *@param n numero de datasets a generar
+     * @param talla tamanyo de los datasets a generar
+     * @param mejor numero de veces que el algoritmo ha sido mejor con respecto
+     * al otro (uni exhaustivo-bi exhaustivo) (uni poda-bi poda)
+     */
+    private contenedorTiempos experimento(int talla, int n, int[] mejor) {
+        ArrayList<Punto> listaPuntos;
+        int puntoInicial;
+
+        // Arrays para resultados 
+        // 0: vUni
+        // 1: vUniPoda
+        // 2: vBi
+        // 3: vBiPoda
+        //Ruta vUni, vUniPoda, vBi, vBiPoda;
+        Ruta ruta;
+        double tMedioUni = 0;
+        double tMedioUniPoda = 0;
+        double tMedioBi = 0;
+        double tMedioBiPoda = 0;
+        double tInicio, tFin, tEjecucion;
+        double costeAux;
+        
+        for (int i = 0; i < n; i++) {
+            listaPuntos = new ArrayList<>();
+            // Genero dataset de la talla pedida
+            Punto.rellenarPuntos(listaPuntos, talla, false, 10);
+            puntoInicial = Punto.puntoInicial(listaPuntos);
+
+            // Aplicamos las 4 estrategias midiendo
+            // Unidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioUni += tEjecucion;    // Lo anyadimos al tiempo medio
+            costeAux=ruta.getDistanciaTotal();
+
             
+            // Bidireccional sin poda
+            tInicio = System.nanoTime();    // Capturamos tiempo inicio
+            ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
+            tFin = System.nanoTime();       // Capturamos tiempo fin
+            // Pasamos tiempo de nanosegundos a msegundos
+            tEjecucion = (tFin - tInicio) / 1_000_000.0;
+            tMedioBi += tEjecucion;    // Lo anyadimos al tiempo medio
+            
+            if(costeAux<ruta.getDistanciaTotal())
+                mejor[0]++;
+            else
+                mejor[2]++; 
             
             
             // Unidireccional con poda
@@ -650,49 +870,224 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             tEjecucion = (tFin - tInicio) / 1_000_000.0;
             tMedioUniPoda += tEjecucion;    // Lo anyadimos al tiempo medio
             
-            // Bidireccional sin poda
-            tInicio = System.nanoTime();    // Capturamos tiempo inicio
-            ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(listaPuntos), puntoInicial);
-            tFin = System.nanoTime();       // Capturamos tiempo fin
-            // Pasamos tiempo de nanosegundos a msegundos
-            tEjecucion = (tFin - tInicio) / 1_000_000.0;
-            tMedioBi += tEjecucion;    // Lo anyadimos al tiempo medio
+             costeAux=ruta.getDistanciaTotal();
             
+            
+
             // Bidireccional con poda
             tInicio = System.nanoTime();    // Capturamos tiempo inicio
-            ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);   
+            ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(listaPuntos), puntoInicial);
             tFin = System.nanoTime();       // Capturamos tiempo fin
             // Pasamos tiempo de nanosegundos a msegundos
             tEjecucion = (tFin - tInicio) / 1_000_000.0;
             tMedioBiPoda += tEjecucion;    // Lo anyadimos al tiempo medio   
+            
+            if(costeAux<ruta.getDistanciaTotal())
+                mejor[1]++;
+            else
+                mejor[3]++; 
         }
+
         
         // Calculamos tiempo medio dividiendo entre el total de iteraciones
         tMedioUni = tMedioUni / n;
         tMedioUniPoda = tMedioUniPoda / n;
         tMedioBi = tMedioBi / n;
         tMedioBiPoda = tMedioBiPoda / n;
-        
-        
-        return new contenedorTiempos(talla,tMedioUni,tMedioUniPoda,tMedioBi,tMedioBiPoda);
+
+        return new contenedorTiempos(talla, tMedioUni, tMedioUniPoda, tMedioBi, tMedioBiPoda);
     }
     
-    private String contenedoresAString(contenedorTiempos[] contenedores){
+
+    private String contenedoresAString(contenedorTiempos[] contenedores) {
         String texto;
-        
+
         texto = "\tVorazUni\tVorazUniPoda\tVorazBi\tVorazBiPoda";
-        texto += "\ntallas\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)"; 
-        for(contenedorTiempos i : contenedores){
+        texto += "\ntallas\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)\tTiempo(mseg)";
+        for (contenedorTiempos i : contenedores) {
             texto += "\n" + i.toString();
         }
-        
-        
+
         return texto;
     }
+
     
-    private void comprobarEstrategias() throws Exception{
+    
+    private void compararDosEstrategias() {
+
+        String[] estrategias = {
+            "Unidireccional Exhaustiva",
+            "Unidireccional Poda",
+            "Bidireccional Exhautiva",
+            "Bidireccional Poda"
+        };
+        JComboBox<String> combo = new JComboBox<>(estrategias);
+
+        // Primer elemento de array -> tamanyo inicial
+        // Segundo elemento -> incremento entre tallas
+        // Tercer elemento -> numero de veces que realiza incrementos
+        // Cuarto elemento -> numero de datasets por talla
+        int[] datos = pedirTamanyo();
+
+        // Para mejorar legibilidad 
+        int tamanoInicial = datos[0];
+        int incrementoTamano = datos[1];
+        int nIncrementos = datos[2];
+        int nDatasets = datos[3];
+
+        String[] distancias = new String[4];
+        String salidaPantalla;
+
+        // Si todos los datos son validos y el usuario no ha cancelado
+        if (datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1) {
+            boolean validos = true;
+            int panel = JOptionPane.showConfirmDialog(this, combo, "Estrategias", OK_CANCEL_OPTION);
+            String[] estrategia = new String[2];
+            estrategia[0] = (String) combo.getSelectedItem();
+            // Si no han pulsado boton de ok
+            if (panel != JOptionPane.OK_OPTION) {
+                validos = false;
+            }
+            // Eliminamos la opcion seleccionada para que no la repita
+            combo.removeItem(estrategia[0]);
+
+            panel = JOptionPane.showConfirmDialog(this, combo, "Estrategias", OK_CANCEL_OPTION);
+            estrategia[1] = (String) combo.getSelectedItem();
+            // Si no han pulsado boton de ok
+            if (panel != JOptionPane.OK_OPTION) {
+                validos = false;
+            }
+
+            if (validos) {
+
+                contenedorTiempos contenedor;
+                // Talla inicial
+                int tallaActual = tamanoInicial;
+                // Repetimos tantas veces como numero de incrementos
+                salidaPantalla = "\t" + estrategias[0] + "\t\t"  + estrategias[1];
+                salidaPantalla += "\ntallas\tTiempo(mseg)\tDistancias(media)\tTiempo(mseg)\tDistancias(media)";
+                for (int i = 0; i < nIncrementos; i++) {
+
+                    contenedor = experimento(tallaActual, nDatasets, distancias);
+
+                    salidaPantalla += "\n" + tallaActual + "\t";
+
+                    // Sumamos el incremento
+                    tallaActual += incrementoTamano;
+
+                    for (int j = 0; j < 2; j++) {
+
+                        switch (estrategia[j]) {
+                            case "Unidireccional Exhaustiva" -> {
+                                salidaPantalla += formateaStringDouble(contenedor.getTVuni() , 4) + "\t"+ distancias[0] ;
+                                
+                            }
+                            case "Unidireccional Poda" -> {
+                                salidaPantalla += formateaStringDouble(contenedor.getTVuniPoda(),4) + "\t" + distancias[1];
+                            }
+                            case "Bidireccional Exhautiva" -> {
+                                salidaPantalla += formateaStringDouble(contenedor.getTBi(),4) + "\t" + distancias[2];
+                            }
+                            case "Bidireccional Poda" -> {
+                                salidaPantalla += formateaStringDouble(contenedor.getTBiPoda(),4) + "\t" + distancias[3];
+                            }
+
+                        }
+                       salidaPantalla += "\t\t";
+                    }
+                    
+                     salidaPantalla += "\n";
+                }
+
+                actualizarPanelOutput(salidaPantalla);
+            }
+        }
+    }
+    
+    
+    private void compararUniBi() {
+
+        String[] estrategias = {
+            "Exhaustiva",
+            "Poda"
+        };
         
-            // Aplicamos las 4 estrategias midiendo
+        JComboBox<String> combo = new JComboBox<>(estrategias);
+
+        // Primer elemento de array -> tamanyo inicial
+        // Segundo elemento -> incremento entre tallas
+        // Tercer elemento -> numero de veces que realiza incrementos
+        // Cuarto elemento -> numero de datasets por talla
+        int[] datos = pedirTamanyo();
+
+        // Para mejorar legibilidad 
+        int tamanoInicial = datos[0];
+        int incrementoTamano = datos[1];
+        int nIncrementos = datos[2];
+        int nDatasets = datos[3];
+
+        int[] mejor = new int[4];
+        String salidaPantalla;
+
+        // Si todos los datos son validos y el usuario no ha cancelado
+        if (datos[0] != -1 && datos[1] != -1 && datos[2] != -1 && datos[3] != -1) {
+            
+            int panel = JOptionPane.showConfirmDialog(this, combo, "Estrategias", OK_CANCEL_OPTION);
+            String estrategia = (String) combo.getSelectedItem();
+            
+            // Solo si han pulsado boton de ok
+            if (panel == JOptionPane.OK_OPTION) {
+
+                contenedorTiempos contenedor;
+                // Talla inicial
+                int tallaActual = tamanoInicial;
+                
+                // Si estrategia -> exhaustiva
+                if(estrategia.equals(estrategias[0]))
+                    salidaPantalla = "\t" + "Uni Exhaustiva" + "\t\t"  + "Bi Exhaustiva";
+                else
+                    salidaPantalla = "\t" + "Uni Poda" + "\t\t"  + "Bi Poda";
+                
+                salidaPantalla += "\ntallas\tTiempo(mseg)\tnVeces mejor\tTiempo(mseg)\tnVeces mejor";
+                for (int i = 0; i < nIncrementos; i++) {
+
+                    contenedor = experimento(tallaActual, nDatasets, mejor);
+
+                    salidaPantalla += "\n" + tallaActual + "\t";
+
+                    // Sumamos el incremento
+                    tallaActual += incrementoTamano;
+
+                    
+
+                    switch (estrategia) {
+                        case "Exhaustiva" -> {
+                            salidaPantalla += formateaStringDouble(contenedor.getTVuni() , 4) + "\t"+ mejor[0] + "\t";
+                            salidaPantalla += formateaStringDouble(contenedor.getTBi() , 4) + "\t"+ mejor[2];
+
+                        }
+                        case "Poda" -> {
+                            salidaPantalla += formateaStringDouble(contenedor.getTVuniPoda(),4) + "\t" + mejor[1] + "\t";
+                            salidaPantalla += formateaStringDouble(contenedor.getTBiPoda(),4) + "\t" + mejor[3];
+                        }
+
+                    }
+                    salidaPantalla += "\t\t";
+
+                    
+                   
+                }
+
+                actualizarPanelOutput(salidaPantalla);
+            }
+        }
+    }
+    
+    
+
+    private void comprobarEstrategias() throws Exception {
+
+        // Aplicamos las 4 estrategias midiendo
         String solucion = datasetCargado.getText() + "\nEstrategia\t\tsolucion\tcalculadas\ttiempo(mseg)";
         double tInicio = 0;
         double tFin = 0;
@@ -700,65 +1095,56 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         Ruta ruta;
         Plot2DPanel panel = new Plot2DPanel();
         creaPlot2DGrafo(puntos, "puntos", panel, Color.RED);
-        
-        
+
         int puntoInicial = Punto.puntoInicial(puntos);
-        
+
         // Unidireccional sin poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
         ruta = Voraz.UnidireccionalExhaustiva(new ArrayList<>(puntos), puntoInicial);
         tFin = System.nanoTime();       // Capturamos tiempo fin
         // Pasamos tiempo de nanosegundos a msegundos
         tEjecucion = (tFin - tInicio) / 1_000_000.0;
-        
-        solucion+= "\nUnidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
-       // panel.add(creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva"));
+
+        solucion += "\nUnidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        // panel.add(creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva"));
         creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva", panel, Color.BLUE);
-        
-        
+
         // Unidireccional con poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
         ruta = Voraz.UnidireccionalExhaustivaPoda(new ArrayList<>(puntos), puntoInicial);
         tFin = System.nanoTime();       // Capturamos tiempo fin
         // Pasamos tiempo de nanosegundos a msegundos
         tEjecucion = (tFin - tInicio) / 1_000_000.0;
-        solucion+= "\nUnidireccional con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        solucion += "\nUnidireccional con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         //panel.add(creaPlot2DRuta(ruta.getRuta(), "UniPoda"));
         creaPlot2DRuta(ruta.getRuta(), "UniPoda", panel, Color.GREEN);
-        
-        
-        
+
         // Bidireccional sin poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
         ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(puntos), puntoInicial);
         tFin = System.nanoTime();       // Capturamos tiempo fin
         // Pasamos tiempo de nanosegundos a msegundos
         tEjecucion = (tFin - tInicio) / 1_000_000.0;
-        solucion+= "\nBidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
-       // panel.add(creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva"));
-        creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva", panel, Color.MAGENTA);
-        
-        
-        
+        solucion += "\nBidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        // panel.add(creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva"));
+        creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva", panel, Color.ORANGE);
+
         // Bidireccional con poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
-        ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(puntos), puntoInicial);   
+        ruta = Voraz.BidireccionalExhaustivaPoda(new ArrayList<>(puntos), puntoInicial);
         tFin = System.nanoTime();       // Capturamos tiempo fin
         // Pasamos tiempo de nanosegundos a msegundos
         tEjecucion = (tFin - tInicio) / 1_000_000.0;
-        solucion+= "\nBidireciconal con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
+        solucion += "\nBidireciconal con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         //panel.add(creaPlot2DRuta(ruta.getRuta(), "BiPoda"));
         creaPlot2DRuta(ruta.getRuta(), "BiPoda", panel, Color.PINK);
-        
-        
-        
+
         actualizarFramePlot(panel);
         actualizarPanelOutput(solucion);
-        
+
     }
-    
+
     // ------------------------------------------------------------------------------------MAIN------------------------------------------------------------------------------------
-    
     /**
      * @param args the command line arguments
      */
@@ -785,22 +1171,17 @@ public class AMC_Prac2 extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AMC_Prac2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         AMC_Prac2 frame = new AMC_Prac2();
-        
+
         //Punto.separarCordenadas(ruta.getRuta(), coordenadas);
-        
-        
-                
 //        double coordY = {20.0,35.0,70.0,66.0,100.0};
-        
-        
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonCargar;
     private javax.swing.JButton botonCompararDataset;
+    private javax.swing.JButton botonCompararDosEstrategias;
     private javax.swing.JButton botonCompararEstrategias;
     private javax.swing.JButton botonGenerar;
     private javax.swing.JLabel datasetCargado;

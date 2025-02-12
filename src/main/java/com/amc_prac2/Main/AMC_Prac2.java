@@ -77,26 +77,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         }
     }
 
-    class contenedorDosAlgoritmosTiempo {
-
-        int talla;
-        double tPrimero;
-        double tSegundo;
-//        double tVBi;
-//        double tVBiPoda;
-
-        public contenedorDosAlgoritmosTiempo(int talla, double tPrimero, double tSegundo) {
-            this.talla = talla;
-            this.tPrimero = tPrimero;
-            this.tSegundo = tSegundo;
-        }
-
-        @Override
-        public String toString() {
-
-            return talla + "\t" + formateaStringDouble(tPrimero, 5) + "\t" + formateaStringDouble(tSegundo, 5);
-        }
-    }
+    
 
     // ------------------------------------------------------------------------------------Inicializar------------------------------------------------------------------------------------
     private ArrayList<Punto> puntos;
@@ -1086,12 +1067,15 @@ public class AMC_Prac2 extends javax.swing.JFrame {
     
 
     private void comprobarEstrategias() throws Exception {
-
+        
+        // Divido el string "dataset actual: 'nombre'" en dos string
+        String[] nombreArchivo = datasetCargado.getText().split(": ");
+        
         // Aplicamos las 4 estrategias midiendo
         String solucion = datasetCargado.getText() + "\nEstrategia\t\tsolucion\tcalculadas\ttiempo(mseg)";
-        double tInicio = 0;
-        double tFin = 0;
-        double tEjecucion = 0;
+        double tInicio;
+        double tFin;
+        double tEjecucion;
         Ruta ruta;
         Plot2DPanel panel = new Plot2DPanel();
         creaPlot2DGrafo(puntos, "puntos", panel, Color.RED);
@@ -1108,6 +1092,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         solucion += "\nUnidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         // panel.add(creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva"));
         creaPlot2DRuta(ruta.getRuta(), "UniExhaustiva", panel, Color.BLUE);
+        EscritorTSP.guardarEnArchivoTour(ruta, nombreArchivo[1] + "_UniExahustiva");
 
         // Unidireccional con poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
@@ -1118,7 +1103,9 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         solucion += "\nUnidireccional con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         //panel.add(creaPlot2DRuta(ruta.getRuta(), "UniPoda"));
         creaPlot2DRuta(ruta.getRuta(), "UniPoda", panel, Color.GREEN);
-
+        EscritorTSP.guardarEnArchivoTour(ruta, nombreArchivo[1] + "_UniPoda");
+        
+        
         // Bidireccional sin poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
         ruta = Voraz.BidireccionalExhaustiva(new ArrayList<>(puntos), puntoInicial);
@@ -1128,6 +1115,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         solucion += "\nBidireccional exhaustivo\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         // panel.add(creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva"));
         creaPlot2DRuta(ruta.getRuta(), "BiExhaustiva", panel, Color.ORANGE);
+        EscritorTSP.guardarEnArchivoTour(ruta, nombreArchivo[1] + "_BiExahustiva");
 
         // Bidireccional con poda
         tInicio = System.nanoTime();    // Capturamos tiempo inicio
@@ -1138,6 +1126,7 @@ public class AMC_Prac2 extends javax.swing.JFrame {
         solucion += "\nBidireciconal con poda\t" + formateaStringDouble(ruta.getDistanciaTotal(), 4) + '\t' + ruta.getCosteTotal() + '\t' + tEjecucion;
         //panel.add(creaPlot2DRuta(ruta.getRuta(), "BiPoda"));
         creaPlot2DRuta(ruta.getRuta(), "BiPoda", panel, Color.PINK);
+        EscritorTSP.guardarEnArchivoTour(ruta, nombreArchivo[1] + "_BiPoda");
 
         actualizarFramePlot(panel);
         actualizarPanelOutput(solucion);

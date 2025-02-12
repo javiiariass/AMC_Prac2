@@ -7,9 +7,7 @@ package com.amc_prac2.Algoritmos;
 import java.util.ArrayList;
 
 import com.amc_prac2.Punto.Punto;
-import static java.lang.Thread.sleep;
-import java.util.Arrays;
-import java.util.List;
+
 
 /**
  * Algoritmo Voraz con las cuatro aproximaciones propuestas
@@ -18,67 +16,6 @@ import java.util.List;
  */
 public class Voraz {
 
-    /**
-     *
-     * Primera aproximacion de la estrategia voraz:
-     * <p>
-     * Busqueda voraz unidireccional exhaustiva: no hace poda y unicamente busca
-     * el proximo Punto mas cercano desde el ultimo aniadido
-     *
-     * @param puntos Lista de los Puntos
-     * @param ciudadInicial Punto inicial desde que iniciar la busqueda / ruta.
-     * El primer punto es el 0 -> si ciudadInicial == 3 -> 4o elemento de la
-     * lista
-     * @return
-     */
-//    public static Ruta EstrategiaUnidireccionalExhaustiva(ArrayList<Punto> puntos, int ciudadInicial) {
-//        int numCiudades = puntos.size();
-//        boolean[] visitado = new boolean[numCiudades];
-//        ArrayList<Punto> ruta = new ArrayList<>();
-//        double costeTotal = 0.0;
-//
-//        // Aniadimos ciudad inicial a la ruta
-//        Punto ciudadActual = puntos.get(ciudadInicial);
-//        ruta.add(ciudadActual);
-//        visitado[ciudadInicial] = true;
-//        
-//        // Como la ciudad esta aniadida a visitados 
-//        // al comparar con la siguiente ciudad,
-//        // no hay que preocuparse de que calcule la distancia consigo misma
-//        for (int i = ciudadInicial; i < puntos.size(); i++) {
-//            double distanciaMinima = Double.MAX_VALUE;
-//            Punto siguienteCiudad = null;
-//            int indiceSiguiente = 0;
-//
-//            // Buscar la ciudad mas cercana no visitada
-//            // Como hay que recorrer todos los puntos, empezamos desde el inicio
-//            for (int j = 0; j < numCiudades; j++) {
-//                if (!visitado[j]) {
-//                    double distancia = ciudadActual.distancia(puntos.get(j));
-//                    if (distancia < distanciaMinima) {
-//                        distanciaMinima = distancia;
-//                        siguienteCiudad = puntos.get(j);
-//                        indiceSiguiente = j;
-//                    }
-//                }
-//            }
-//
-//            // Añadir la siguiente ciudad a la ruta
-//            if (siguienteCiudad != null) {
-//                ruta.add(siguienteCiudad);
-//                visitado[indiceSiguiente] = true;
-//                costeTotal += distanciaMinima;
-//                ciudadActual = siguienteCiudad;
-//            }
-//        }
-//
-//        // Regresar a la ciudad inicial
-//        costeTotal += ciudadActual.distancia(puntos.get(ciudadInicial));
-//        ruta.add(puntos.get(ciudadInicial));
-//
-//        // Crear y devolver el objeto Ruta
-//        return new Ruta(ruta,costeTotal, 0);
-//    }
     /**
      *
      * Primera aproximacion de la estrategia voraz:
@@ -377,8 +314,14 @@ public class Voraz {
         // La poda hay que realizarla en el segundo bucle, cuando la distancia en el eje ordenado por 
         // quicksort sea mayor o igual a la distancia euclidea menor actual
         
+        // Al ordenar los puntos la ciudad inicial dejara de estar en la posicion que estaba.
+        // Debemos buscarla para empezar por el mismo punto en todos los algoritmos
+        Punto puntoInicial = puntos.get(ciudadInicial);
+        
         // Primero ordenamos el array haciendo uso de quicksort
         Quicksort.quickSort(puntos);
+        
+        ciudadInicial = puntos.indexOf(puntoInicial);
         
         int numCiudades = puntos.size();
 

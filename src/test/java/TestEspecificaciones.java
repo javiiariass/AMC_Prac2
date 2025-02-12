@@ -48,14 +48,15 @@ public class TestEspecificaciones {
             System.out.println(nombreArchivoLeido != null ? ("                                         Archivo leido: " + nombreArchivoLeido) : " ");
             System.out.println("1. Generar Array aleatorio");
             System.out.println("2. Leer DataSet de memoria");
-            System.out.println("3. Comprobar estrategias con dataset cargado");
+            System.out.println("3. NO IMPLEMENTADO AQUI Comprobar estrategias con dataset cargado");
             System.out.println("4. Comparar todas las estrategias (con distintas tallas)");
-            System.out.println("5. Estudiar dos estrategias");
+            System.out.println("5. NO IMPLEMENTADO AQUI Estudiar dos estrategias");
             System.out.println("6. Vaciar Array cargado (no elimina el archivo)");
             System.out.println("7. Mostrar Array cargado");
             System.out.println("8. Activar/Desactivar peor caso (Todos los puntos en la misma coordenada X)");
             System.out.println("9. Elegir estrategia con dataset cargado");
             System.out.println("10. Calculadora de distancias");
+            System.out.println("11. Prueba plot");
             System.out.println("0. Salir");
 
             Scanner entrada = new Scanner(System.in);
@@ -224,12 +225,14 @@ public class TestEspecificaciones {
                     }
                     case 10 -> {
                         do {
+                            // Como las id empiezan por 1 y no por 0 -> el punto con id 1 será el que tenga indice 0
+                            System.out.println("*********** -99 para salir de calculadora ***********");
                             System.out.println("punto 1");
                             int opcion = entrada.nextInt();
-                            Punto p1 = puntos.get(opcion);
+                            Punto p1 = puntos.get(opcion-1);
                             System.out.println("punto 2");
                             opcion = entrada.nextInt();
-                            Punto p2 = puntos.get(opcion);
+                            Punto p2 = puntos.get(opcion-1);
                             System.out.println("Distancia:   " + p1.distancia(p2));
                         } while (entrada.nextInt() != -99);
 

@@ -1031,7 +1031,8 @@ public class AMC_Prac2 extends javax.swing.JFrame {
                 
                 salidaPantalla += "\ntallas\tTiempo(mseg)\tnVeces mejor\tTiempo(mseg)\tnVeces mejor";
                 for (int i = 0; i < nIncrementos; i++) {
-
+                    // Reseteamos valor de contador para proxima comparacion con tallas nuevas
+                    mejor = new int[4];
                     contenedor = experimento(tallaActual, nDatasets, mejor);
 
                     salidaPantalla += "\n" + tallaActual + "\t";
@@ -1069,7 +1070,9 @@ public class AMC_Prac2 extends javax.swing.JFrame {
     private void comprobarEstrategias() throws Exception {
         
         // Divido el string "dataset actual: 'nombre'" en dos string
+        
         String[] nombreArchivo = datasetCargado.getText().split(": ");
+        
         
         // Aplicamos las 4 estrategias midiendo
         String solucion = datasetCargado.getText() + "\nEstrategia\t\tsolucion\tcalculadas\ttiempo(mseg)";

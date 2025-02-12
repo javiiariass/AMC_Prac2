@@ -25,8 +25,8 @@ public class Quicksort {
     }
 
     /**
-     * Ordena el array de puntos por la coordenada X de manera creciente No es
-     * necesario indicar el limite / tamanio del array
+     * Ordena el array de puntos por la coordenada Y de manera creciente <p>
+     * No es necesario indicar el limite / tamanio del array
      *
      * @param puntos lista de objetos tipo Punto
      */

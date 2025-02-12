@@ -35,7 +35,7 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 > Gestionamos su dependencia con Maven por lo que no deberíamos hacer nada al respecto para ejecutar el programa en otro dispositivo 
 
 
-[[datosAMC_Prac2.xlsx]]
+[datosAMC_Prac2.xlsx](datosAMC_Prac2.xlsx)
 
 
 

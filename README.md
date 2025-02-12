@@ -9,7 +9,7 @@ Por la dificultad de encontrar soluciones a problemas NP-completos, empleamos t�
 
 
 > [!note] 
-> Búsqueda voraz Exhaustiva:
+> ## Búsqueda voraz Exhaustiva
 > Según [Wikipedia](https://es.wikipedia.org/wiki/Algoritmo_voraz) y los [apuntes de la asignatura](https://aulasvirtuales.uhu.es/pluginfile.php/211603/mod_resource/content/12/TEMA3_1_AMC_19_20.pdf)[^1] podemos entender que el algoritmo voraz es  una estrategia de búsqueda que se centra en buscar la solución más óptima en cada paso local/iteración para así intentar alcanzar la solución general óptima, que no es más que la solución que más se aproxima a la función objetivo. 
 > Podríamos decir que su principal desventaja es que, una vez toma una decisión, no puede retroceder.
 
@@ -32,7 +32,7 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 # Código
 
 > [!important]
-> DEPENDENCIAS
+> ## DEPENDENCIAS
 > Vamos a hacer uso de la librería externa [JMathPlot](https://github.com/yannrichet/jmathplot/tree/master)
 > Gestionamos su dependencia con Maven por lo que no deberíamos hacer nada al respecto para ejecutar el programa en otro dispositivo 
 

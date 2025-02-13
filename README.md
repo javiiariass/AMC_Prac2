@@ -1,4 +1,4 @@
-
+%% Te subo a la moodle el archivo para que veas que no lo he cambiado pero desde aquí se ve mejor https://github.com/javiiariass/AMC_Prac2.git
 # Problema del viajante
 Partimos de uno de los problemas de optimización combinatoria más conocidos:  encontrar el circuito de menor coste, dadas una serie de ciudades, que parta de una ciudad y recorra el resto una única vez, volviendo a la ciudad de origen.
 

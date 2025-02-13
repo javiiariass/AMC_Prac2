@@ -35,7 +35,7 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 ## Datasets
 ### berlin52
 #### Unidireccional Exhaustiva
-![berlin52UniEx.png](ImagenesDatasets\Berlin52\berlin52UniEx.png)
+![berlin52UniEx.png](ImagenesDatasets/Berlin52/berlin52UniEx.png)
 #### Bidireccional Exhaustiva
 ![[berlin52BiEx.png]]
 #### Unidireccional Poda

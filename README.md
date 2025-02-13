@@ -2,6 +2,17 @@
 
 
 <!--Te subo a la moodle el archivo para que veas que no lo he cambiado pero desde aquí se ve mejor https://github.com/javiiariass/AMC_Prac2.git-->
+
+> [!important] 
+> # Dependencias
+> Vamos a hacer uso de la librería externa [JMathPlot](https://github.com/yannrichet/jmathplot/tree/master)
+> Gestionamos su dependencia con Maven por lo que no deberíamos hacer nada al respecto para ejecutar el programa en otro dispositivo 
+> # Error en el proyecto descargado?
+> Si por lo que sea no puedes ejecutar directamente el proyecto, prueba a crear un nuevo proyecto maven y, una vez creado, arrastra a 
+> la carpeta del proyecto las carpetas "src", "datasets y el archivo "pom.xml" reemplazando los existentes.
+> Igual debes reasignar el main de nuevo haciendo click derecho (ya en netbeans) sobre el proyecto -> propiedades -> Run -> Main class:AMC_Prac2.java
+
+
 # Problema del viajante
 Partimos de uno de los problemas de optimización combinatoria más conocidos:  encontrar el circuito de menor coste, dadas una serie de ciudades, que parta de una ciudad y recorra el resto una única vez, volviendo a la ciudad de origen.
 
@@ -9,7 +20,6 @@ Si no le damos importancia a la ciudad de origen, tendríamos $(n-1)!$ rutas pos
 En cambio, si tenemos en cuenta la ciudad de origen, obtenemos $n!$ rutas posibles.
 
 Por la dificultad de encontrar soluciones a problemas NP-completos, empleamos técnicas que den con soluciones aceptables en un tiempo computacionalmente prudente.
-
 
 > [!note] 
 > ## Búsqueda voraz Exhaustiva
@@ -29,12 +39,6 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 En esta aproximación, partimos ordenando el array por la coordenada x del punto.
 Partiendo de una ciudad aleatoria, nos desplazamos a su ciudad más cercana, y una vez en ella, volvemos a desplazarnos a su ciudad más próxima[^2] ==que no haya sido visitada==. Comprobamos las distancias en la cola (tail) y cabeza de la cola/array. Hay que tener en cuenta que con esta estrategia de búsqueda no podemos retroceder, es decir, una vez hemos establecido como ciudad actual la que tenía menor distancia con la anterior, sólo podemos comprobar distancias con esta ciudad y no con las anteriores.
 La diferencia con respecto a la exhaustiva es que, como los puntos están ordenados por coordenada X, si la distancia entre las dos coordenadas X de los dos puntos a comparar es mayor (o igual) que la distancia mínima actual, quiere decir que, por lo menos, la distancia mínima de esos dos puntos y los siguientes va a ser igual o mayor a la mínima actual. Por eso mismo, es posible realizar la poda y no hacer comparaciones innecesarias. 
-
-
-> [!important] 
-> # Dependencias
-> Vamos a hacer uso de la librería externa [JMathPlot](https://github.com/yannrichet/jmathplot/tree/master)
-> Gestionamos su dependencia con Maven por lo que no deberíamos hacer nada al respecto para ejecutar el programa en otro dispositivo 
 
 # Estudios realizados
 ## Datasets

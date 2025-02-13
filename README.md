@@ -8,7 +8,7 @@ En cambio, si tenemos en cuenta la ciudad de origen, obtenemos $n!$ rutas posibl
 Por la dificultad de encontrar soluciones a problemas NP-completos, empleamos técnicas que den con soluciones aceptables en un tiempo computacionalmente prudente.
 
 
-> [!info] 
+> [!note] 
 > ## Búsqueda voraz Exhaustiva
 > Según [Wikipedia](https://es.wikipedia.org/wiki/Algoritmo_voraz) y los [apuntes de la asignatura](https://aulasvirtuales.uhu.es/pluginfile.php/211603/mod_resource/content/12/TEMA3_1_AMC_19_20.pdf)[^1] podemos entender que el algoritmo voraz es  una estrategia de búsqueda que se centra en buscar la solución más óptima en cada paso local/iteración para así intentar alcanzar la solución general óptima, que no es más que la solución que más se aproxima a la función objetivo. 
 > Podríamos decir que su principal desventaja es que, una vez toma una decisión, no puede retroceder.
@@ -83,11 +83,13 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 
 ## Comparación estrategias
 
-> [!info] ¿Qué estrategia es mejor?
+> [!tip] 
+> ### ¿Qué estrategia es mejor?
 > He tomado como mejor estrategias aquellas que dan como resultado una distancia / recorrido total menores 
 
 
-> [!note] TLDR
+> [!note] 
+> TLDR
 > Aunque el rendimiento de estos algoritmos depende bastante de los datos usados en el estudio y de la posición (ciudad) inicial, podemos ver que, por lo general, el bidireccional acaba siendo una mejor estrategia si buscamos mayor precisión o exactitud. Sin embargo, hay que tener en cuenta que, para obtener mayor exactitud, estamos sacrificando tiempo de computación. 
 > Las cuatro aproximaciones son buenas estrategias y cada una tendrá su uso dependiendo de la simplicidad, velocidad de ejecución y/o precisión en el resultado que busquemos.
 > (sin olvidar que ninguna de ellas es 100% precisa por la dificultad de encontrar la solución óptima a problemas NP-completos).
@@ -102,12 +104,14 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 | 2500   | 57.239         | 5            | 115.761       | 5            |
 | 3000   | 81.979         | 3            | 165.191       | 7            |
 | 3500   | 110.496        | 7            | 223.949       | 3            |
+
 #### Gráfica tiempo
-![AMC_MemoriaP2-1.png]]
+![GrafTiempoEx.png](ImagenesDatasets/GrafTiempoEx.png)
 #### Gráfica veces mejor
-![AMC_MemoriaP2_GrafVecesMejor.png]]
+![GrafVecesMejorEx.png](ImagenesDatasets/GrafVecesMejorEx.png)
 ### Poda
 #### Tabla
+
 |        | Uni Poda     |              | Bi Poda      |              |
 | ------ | ------------ | ------------ | ------------ | ------------ |
 | tallas | Tiempo(mseg) | nVeces mejor | Tiempo(mseg) | nVeces mejor |
@@ -118,9 +122,9 @@ La diferencia con respecto a la exhaustiva es que, como los puntos están ordena
 | 3500   | 108.853      | 2            | 152.063      | 8            |
 
 #### Gráfica tiempo
-![AMC_MemoriaP2GrafTiempoPoda.png]]
+![GrafTiempoPoda.png](ImagenesDatasets/GrafTiempoPoda.png)
 #### Gráfica veces mejor
-![AMC_MemoriaP2GrafVecesMejorPoda.png]]
+![GrafVecesMejorPoda.png](ImagenesDatasets/GrafVecesMejorPoda.png)
 
 
 [^1]: Diapositiva [48-52] del Tema 3 
